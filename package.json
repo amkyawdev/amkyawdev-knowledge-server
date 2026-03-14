@@ -1,0 +1,7 @@
+# Dependencies
+# Build tools
+prettier
+eslint
+
+# Testing
+jest

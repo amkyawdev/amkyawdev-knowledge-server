@@ -1,0 +1,46 @@
+{
+  "categories": [
+    {
+      "id": "general",
+      "name": "အထွေထွေ",
+      "description": "နှုတ်ဆက်ခြင်း၊ အကြောင်း၊ ဟာသများ",
+      "icon": "💬"
+    },
+    {
+      "id": "technical",
+      "name": "နည်းပညာ",
+      "description": "ပရိုဂရမ်းမင်း၊ API၊ Frameworks",
+      "icon": "💻"
+    },
+    {
+      "id": "chatbot",
+      "name": "Chatbot",
+      "description": "NLP၊ Dialog Management၊ Platforms",
+      "icon": "🤖"
+    },
+    {
+      "id": "coder",
+      "name": "Coder",
+      "description": "Algorithms၊ Data Structures၊ Best Practices",
+      "icon": "⚡"
+    },
+    {
+      "id": "image",
+      "name": "Image",
+      "description": "ပုံများနှင့် သတင်းအများအပြား",
+      "icon": "🖼️"
+    },
+    {
+      "id": "lifestyle",
+      "name": "Lifestyle",
+      "description": "ကျန်းမာခြင်း၊ ပညာရေး၊ အနုပညာ",
+      "icon": "🌟"
+    },
+    {
+      "id": "languages",
+      "name": "ဘာသာစကား",
+      "description": "မြန်မာ၊ အင်္ဂလိပ်၊ ထိုင်း စသည်ဖြင့်",
+      "icon": "🌐"
+    }
+  ]
+}

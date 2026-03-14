@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ရှာဖွေရန် - Knowledge Server</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/light-theme.css" id="theme-stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="../index.html" class="logo">
+                    <img src="../assets/images/logo.svg" alt="Logo" width="32" height="32">
+                    <span>Knowledge Server</span>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">ပင်မစာမျက်နှာ</a></li>
+                    <li><a href="categories.html">အမျိုးအစားများ</a></li>
+                    <li><a href="search.html" class="active">ရှာဖွေရန်</a></li>
+                    <li><a href="tools.html">ပါဝင်းသုံးစွက်မှုများ</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="btn-icon">🌙</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="search-page">
+            <div class="container">
+                <h1>ရှာဖွေရန်</h1>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="ရှာဖွေရန်...">
+                    <button id="search-btn" class="btn-primary">ရှာဖွေရန်</button>
+                </div>
+                
+                <div id="loading" style="display: none;">ရှာဖွေလိုက်ပါပါ...</div>
+                <p id="result-count"></p>
+                <div id="search-results"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Knowledge Server</p>
+        </div>
+    </footer>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/theme-switcher.js"></script>
+    <script src="../js/knowledge-loader.js"></script>
+    <script src="../js/search.js"></script>
+</body>
+</html>

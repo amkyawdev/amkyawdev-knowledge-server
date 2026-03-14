@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Server - အသိပညာဗဟုသုတများ</title>
+    <link rel="icon" href="assets/images/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/light-theme.css" id="theme-stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <img src="assets/images/logo.svg" alt="Logo" width="32" height="32">
+                    <span>Knowledge Server</span>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="active">ပင်မစာမျက်နှာ</a></li>
+                    <li><a href="pages/categories.html">အမျိုးအစားများ</a></li>
+                    <li><a href="pages/search.html">ရှာဖွေရန်</a></li>
+                    <li><a href="pages/tools.html">ပါဝင်းသုံးစွက်မှုများ</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="btn-icon" aria-label="အလင်း/အမှောင် အပြောင်းအလဲ">
+                        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>အသိပညာဗဟုသုတ</h1>
+                <p class="subtitle">သင့်အတွက် လွယ်ကူစွာ ရှာဖွေနိုင်ပါပါ</p>
+                <div class="search-box">
+                    <input type="text" id="main-search" placeholder="ရှာဖွေရန်..." aria-label="ရှာဖွေရန်">
+                    <button type="button" id="search-btn" class="btn-primary">ရှာဖွေရန်</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="categories-preview">
+            <div class="container">
+                <h2>အမျိုးအစားများ</h2>
+                <div class="category-grid" id="category-grid">
+                    <!-- Categories will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2>အင်္ဂါရပ်များ</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>မြန်ဆန်သော ရှာဖွေမှု</h3>
+                        <p>မြန်ဆန်ပါပါ ရှာဖွေနိုင်ပါပါ</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📂</div>
+                        <h3>အမျိုးအစားခွဲခြားခြင်း</h3>
+                        <p>သင့်လိုအပ်သော အမျိုးအစားအလိုက် ရှာဖွေနိုင်ပါပါ</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛠️</div>
+                        <h3>ပါဝင်းသုံးစွက်မှုများ</h3>
+                        <p>JSON ကိုင်တွယ်ရန် ပါဝင်းသုံးစွက်မှုများ</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>မိုဘိုင်းပါဋ္ဌာနါက်ကပါ</h3>
+                        <p>မည်သည့်စက်ပါဋ္ဌာန်းမှာမဆို အသုံးပါဋ္ဌာန်းနိုင်ပါပါ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-preview">
+            <div class="container">
+                <h2>အချက်အလက်များ</h2>
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-categories">0</span>
+                        <span class="stat-label">အမျိုးအစားများ</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-items">0</span>
+                        <span class="stat-label">စုစုပါင်း အချက်အလက်များ</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-files">0</span>
+                        <span class="stat-label">ဖိုင်များ</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Knowledge Server</h4>
+                    <p>အသိပညာဗဟုသုတ များစွာ ရရှိနိုင်ပါပါ</p>
+                </div>
+                <div class="footer-section">
+                    <h4>လင့်များ</h4>
+                    <ul>
+                        <li><a href="pages/about.html">အကြောင်း</a></li>
+                        <li><a href="pages/contact.html">ဆက်သွယ်ရန်</a></li>
+                        <li><a href="pages/docs.html">မှတ်ချက်များ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>အခြား</h4>
+                    <ul>
+                        <li><a href="pages/tools.html">ပါဝင်းသုံးစွက်မှုများ</a></li>
+                        <li><a href="pages/api-docs.html">API မှတ်ချက်</a></li>
+                        <li><a href="pages/404.html">အမှားများ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Knowledge Server. အရွယ်အစားအားလုံးကို အသုံးပါဋ္ဌာန်းနိုင်ပါပါ</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/theme-switcher.js"></script>
+    <script src="js/knowledge-loader.js"></script>
+    <script src="js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loader = new KnowledgeLoader();
+            await loader.loadCategories();
+            
+            // Update stats
+            document.getElementById('total-categories').textContent = loader.getCategoryCount();
+            document.getElementById('total-items').textContent = await loader.getTotalItems();
+            
+            // Search functionality
+            const searchInput = document.getElementById('main-search');
+            const searchBtn = document.getElementById('search-btn');
+            
+            searchBtn.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    window.location.href = `pages/search.html?q=${encodeURIComponent(query)}`;
+                }
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        window.location.href = `pages/search.html?q=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

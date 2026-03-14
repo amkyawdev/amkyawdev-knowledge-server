@@ -1,0 +1,15 @@
+{
+  "category": "image",
+  "items": [
+    {
+      "id": "image-001",
+      "title": "Image Processing အခြေခံ",
+      "content": "Image Processing သည် ပုံများကို ပြင်ဆင်ပါဝင်းပါပါ။ Resize၊ Crop၊ Filter များပါဝင်းပါပါ။"
+    },
+    {
+      "id": "image-002",
+      "title": "Computer Vision",
+      "content": "Computer Vision သည် ကွန်ပျူတာများအား ပုံများကို နားလည်စေပါဝင်းပါပါ။ Object Detection၊ Face Recognition များပါဝင်းပါပါ။"
+    }
+  ]
+}

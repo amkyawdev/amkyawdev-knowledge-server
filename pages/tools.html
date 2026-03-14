@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON ပါဝင်းသုံးစွက်မှုများ - Knowledge Server</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/light-theme.css" id="theme-stylesheet">
+    <style>
+        .tool-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            transition: all var(--transition-normal);
+        }
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+        .tool-card h3 {
+            margin-bottom: var(--spacing-sm);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="../index.html" class="logo">
+                    <img src="../assets/images/logo.svg" alt="Logo" width="32" height="32">
+                    <span>Knowledge Server</span>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="../index.html">ပင်မစာမျက်နှာ</a></li>
+                    <li><a href="categories.html">အမျိုးအစားများ</a></li>
+                    <li><a href="search.html">ရှာဖွေရန်</a></li>
+                    <li><a href="tools.html" class="active">ပါဝင်းသုံးစွက်မှုများ</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="btn-icon">🌙</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="tools-page">
+            <div class="container">
+                <h1>JSON ပါဝင်းသုံးစွက်မှုများ</h1>
+                <p class="page-description">JSON ဖိုင်များနှင့် အလုပ်လုပ်ပါဝင်းသုံးစွက်များ</p>
+                
+                <div class="tools-grid">
+                    <a href="merge-json.html" class="tool-card">
+                        <div class="tool-icon">🔗</div>
+                        <h3>Merge JSON</h3>
+                        <p>JSON ဖိုင်များကို ပေါင်းစပ်ရန်</p>
+                    </a>
+                    <a href="validate-json.html" class="tool-card">
+                        <div class="tool-icon">✅</div>
+                        <h3>Validate JSON</h3>
+                        <p>JSON ပါဝင်းသုံးစွက် မှန်ကန်မှုစစ်ဆေးရန်</p>
+                    </a>
+                    <a href="format-json.html" class="tool-card">
+                        <div class="tool-icon">📝</div>
+                        <h3>Format JSON</h3>
+                        <p>JSON ကို အလှဆင်းရန်</p>
+                    </a>
+                    <a href="minify-json.html" class="tool-card">
+                        <div class="tool-icon">📦</div>
+                        <h3>Minify JSON</h3>
+                        <p>JSON ကို ပါးလွှားစေရန်</p>
+                    </a>
+                    <a href="convert-csv.html" class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3>CSV မှ JSON</h3>
+                        <p>CSV မှ JSON သို့ ပြောင်းလဲရန်</p>
+                    </a>
+                    <a href="diff-json.html" class="tool-card">
+                        <div class="tool-icon">🔀</div>
+                        <h3>Diff JSON</h3>
+                        <p>JSON ဖိုင်နှစ်ခုကို နှိုင်းယှဉ်ရန်</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Knowledge Server</p>
+        </div>
+    </footer>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/theme-switcher.js"></script>
+</body>
+</html>

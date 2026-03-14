@@ -1,0 +1,20 @@
+{
+  "category": "coder",
+  "items": [
+    {
+      "id": "coder-001",
+      "title": "Algorithms အခြေခံ",
+      "content": "Algorithm သည် ပြသနာတစ်ခုကို ဖြေရှင်းရန် အဆင့်များဖြစ်ပါပါ။ Time Complexity နှင့် Space Complexity တို့ကို သိရှိရန် လိုအပ်ပါပါ။"
+    },
+    {
+      "id": "coder-002",
+      "title": "Data Structures အခြေခံ",
+      "content": "Data Structure သည် အချက်အလက်များကို သိမ်းဆည်းပါဝင်းပါပါ။ Array၊ Linked List၊ Stack၊ Queue၊ Tree၊ Graph များရှိပါပါ။"
+    },
+    {
+      "id": "coder-003",
+      "title": "Design Patterns",
+      "content": "Design Pattern သည် အလယ်အလတ်ဖြစ်တဲ့ ပါဝင်းသုံးစွက်ပြသနာများကို ဖြေရှင်းရန် နည်းလမ်းများဖြစ်ပါပါ။"
+    }
+  ]
+}

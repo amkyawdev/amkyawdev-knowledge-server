@@ -1,0 +1,15 @@
+{
+  "totalCategories": 7,
+  "totalItems": 100,
+  "totalFiles": 50,
+  "lastUpdated": "2024-01-01T00:00:00Z",
+  "categories": [
+    {"id": "general", "name": "အထွေထွေ", "items": 10},
+    {"id": "technical", "name": "နည်းပညာ", "items": 20},
+    {"id": "chatbot", "name": "Chatbot", "items": 15},
+    {"id": "coder", "name": "Coder", "items": 20},
+    {"id": "image", "name": "Image", "items": 10},
+    {"id": "lifestyle", "name": "Lifestyle", "items": 15},
+    {"id": "languages", "name": "ဘာသာစကား", "items": 10}
+  ]
+}

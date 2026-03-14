@@ -1,0 +1,45 @@
+{
+  "category": "technical",
+  "items": [
+    {
+      "id": "tech-001",
+      "title": "JavaScript အခြေခံ",
+      "content": "JavaScript သည် ဝဘ်စာမျက်နှာများအတွက် ပါဝင်းသုံးစွက်တစ်ခုဖြစ်ပါပါ။ ဒါပေမဲ့ ယခုအခါမှာ နောက်ဆုံးပါဝင်းသုံးစွက်များအဖြစ်လည်း အသုံးပါဝင်းပါပါ။"
+    },
+    {
+      "id": "tech-002",
+      "title": "Python အခြေခံ",
+      "content": "Python သည် လွယ်ကူတဲ့ ပါဝင်းသုံးစွက်ဘာသာစကားဖြစ်ပါပါ။ Data Science၊ Machine Learning၊ Web Development များအတွက် အလွန်အသုံးပါဝင်းပါပါ။"
+    },
+    {
+      "id": "tech-003",
+      "title": "React အခြေခံ",
+      "content": "React သည် Facebook မှ ဖန်တီးတဲ့ UI Library ဖြစ်ပါပါ။ Component-based architecture ဖြစ်ပါဝင်းပါပါ။"
+    },
+    {
+      "id": "tech-004",
+      "title": "Node.js အခြေခံ",
+      "content": "Node.js သည် JavaScript ကို server-side မှာ အသုံးပါဝင်းပါပါ။ Non-blocking I/O ဖြစ်ပါဝင်းပါပါ။"
+    },
+    {
+      "id": "tech-005",
+      "title": "API အခြေခံ",
+      "content": "API (Application Programming Interface) သည် ဆော့ဖ်ဝဲများအကြား ဆက်သွယ်ပါဝင်းပါပါ။ RESTful API သည် အအလွန်အသုံးပါဝင်းပါပါ။"
+    },
+    {
+      "id": "tech-006",
+      "title": "Database အခြေခံ",
+      "content": "Database သည် အချက်အလက်များကို သိမ်းဆည်းပါဝင်းပါပါ။ SQL နှင့် NoSQL နှစ်မျိုးရှိပါပါ။"
+    },
+    {
+      "id": "tech-007",
+      "title": "Git အခြေခံ",
+      "content": "Git သည် version control system ဖြစ်ပါပါ။ ကုဒ်များကို မှတ်သားခြင်းနှင့် ပြန်လည်ထူထောင်ခြင်းအတွက် အသုံးပါဝင်းပါပါ။"
+    },
+    {
+      "id": "tech-008",
+      "title": "Docker အခြေခံ",
+      "content": "Docker သည် containerization နည်းပညာဖြစ်ပါပါ။ ဆော့ဖ်ဝဲများကို လွယ်ကူစွာ ဖန်တီးပါဝင်းပါပါ။"
+    }
+  ]
+}

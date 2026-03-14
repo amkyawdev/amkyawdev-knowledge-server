@@ -1,0 +1,20 @@
+{
+  "category": "chatbot",
+  "items": [
+    {
+      "id": "chatbot-001",
+      "title": "Chatbot အခြေခံ",
+      "content": "Chatbot သည် AI ဖြစ်တဲ့ အလိုအလျောက် ဆက်သွယ်ပါဝင်းပါပါ။ လူများနှင့် စကားပြောဆိုနိုင်ပါပါ။"
+    },
+    {
+      "id": "chatbot-002",
+      "title": "NLP အခြေခံ",
+      "content": "Natural Language Processing (NLP) သည် ကွန်ပျူတာများအား လူသားဘာသာစကားကို နားလည်စေပါဝင်းပါပါ။"
+    },
+    {
+      "id": "chatbot-003",
+      "title": "Intent Recognition",
+      "content": "Intent recognition သည် အသုံးပါဋ္ဌာန်းသူ၏ ရည်ရွယ်ချက်ကို သိမ်းဆည်းပါဝင်းပါပါ။"
+    }
+  ]
+}

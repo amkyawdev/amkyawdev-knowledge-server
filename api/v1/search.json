@@ -1,0 +1,41 @@
+{
+  "search": {
+    "endpoint": "/api/v1/search",
+    "description": "Search across all categories",
+    "method": "GET",
+    "params": {
+      "q": "Search query (required)"
+    }
+  },
+  "categories": {
+    "endpoint": "/api/v1/categories",
+    "description": "Get all categories",
+    "method": "GET"
+  },
+  "category": {
+    "endpoint": "/api/v1/category/:id",
+    "description": "Get category by ID",
+    "method": "GET",
+    "params": {
+      "id": "Category ID"
+    }
+  },
+  "item": {
+    "endpoint": "/api/v1/item/:id",
+    "description": "Get item by ID",
+    "method": "GET",
+    "params": {
+      "id": "Item ID"
+    }
+  },
+  "stats": {
+    "endpoint": "/api/v1/stats",
+    "description": "Get knowledge base statistics",
+    "method": "GET"
+  },
+  "health": {
+    "endpoint": "/api/v1/health",
+    "description": "Health check endpoint",
+    "method": "GET"
+  }
+}
