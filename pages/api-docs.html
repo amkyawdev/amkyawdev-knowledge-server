@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en" x-data="apiDocs()" x-init="init">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Amkyaw.Dev Knowledge Base</title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Highlight.js for code syntax -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body :class="{ 'dark-theme': isDark }">
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="../index.html">
+                    <img src="../assets/images/logo.svg" alt="Amkyaw.Dev" width="112" height="28">
+                </a>
+                
+                <a role="button" class="navbar-burger" :class="{ 'is-active': isMenuOpen }" 
+                   @click="toggleMenu" aria-label="menu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div class="navbar-menu" :class="{ 'is-active': isMenuOpen }">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="../index.html">Home</a>
+                    <a class="navbar-item" href="search.html">Search</a>
+                    <a class="navbar-item" href="categories.html">Categories</a>
+                    <a class="navbar-item is-active" href="api-docs.html">API</a>
+                    <a class="navbar-item" href="about.html">About</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <button class="button is-ghost" @click="toggleTheme">
+                            <i class="fas" :class="isDark ? 'fa-sun' : 'fa-moon'"></i>
+                        </button>
+                    </div>
+                    <div class="navbar-item">
+                        <a href="api-playground.html" class="button is-primary">
+                            <span class="icon"><i class="fas fa-flask"></i></span>
+                            <span>Try Playground</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- API Documentation Hero -->
+    <section class="hero is-primary is-small">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    <i class="fas fa-code"></i>
+                    API Documentation
+                </h1>
+                <p class="subtitle">
+                    Comprehensive API reference for Amkyaw.Dev Knowledge Base
+                </p>
+                <div class="tags are-medium">
+                    <span class="tag is-light">Version 1.0.0</span>
+                    <span class="tag is-light">RESTful</span>
+                    <span class="tag is-light">JSON</span>
+                    <span class="tag is-light">CORS Enabled</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <!-- Sidebar -->
+                <div class="column is-3">
+                    <div class="menu api-menu is-sticky">
+                        <p class="menu-label">Getting Started</p>
+                        <ul class="menu-list">
+                            <li><a href="#introduction" :class="{ 'is-active': activeSection === 'introduction' }">Introduction</a></li>
+                            <li><a href="#authentication" :class="{ 'is-active': activeSection === 'authentication' }">Authentication</a></li>
+                            <li><a href="#base-url" :class="{ 'is-active': activeSection === 'base-url' }">Base URL</a></li>
+                            <li><a href="#rate-limiting" :class="{ 'is-active': activeSection === 'rate-limiting' }">Rate Limiting</a></li>
+                            <li><a href="#errors" :class="{ 'active': activeSection === 'errors' }">Error Handling</a></li>
+                        </ul>
+
+                        <p class="menu-label">Endpoints</p>
+                        <ul class="menu-list">
+                            <li>
+                                <a href="#search-api" :class="{ 'is-active': activeSection === 'search-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Search
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#categories-api" :class="{ 'is-active': activeSection === 'categories-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Categories
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#category-api" :class="{ 'is-active': activeSection === 'category-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Single Category
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#item-api" :class="{ 'is-active': activeSection === 'item-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Single Item
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#popular-api" :class="{ 'is-active': activeSection === 'popular-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Popular Items
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#recent-api" :class="{ 'is-active': activeSection === 'recent-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Recent Items
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#related-api" :class="{ 'is-active': activeSection === 'related-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Related Items
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#stats-api" :class="{ 'is-active': activeSection === 'stats-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Statistics
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#health-api" :class="{ 'is-active': activeSection === 'health-api' }">
+                                    <span class="tag is-success is-small mr-2">GET</span>
+                                    Health Check
+                                </a>
+                            </li>
+                        </ul>
+
+                        <p class="menu-label">External APIs</p>
+                        <ul class="menu-list">
+                            <li>
+                                <a href="#github-api" :class="{ 'is-active': activeSection === 'github-api' }">
+                                    <span class="tag is-info is-small mr-2">GET</span>
+                                    GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#openai-api" :class="{ 'is-active': activeSection === 'openai-api' }">
+                                    <span class="tag is-warning is-small mr-2">POST</span>
+                                    OpenAI
+                                </a>
+                            </li>
+                        </ul>
+
+                        <p class="menu-label">Code Examples</p>
+                        <ul class="menu-list">
+                            <li><a href="#javascript" :class="{ 'is-active': activeSection === 'javascript' }">JavaScript</a></li>
+                            <li><a href="#python" :class="{ 'is-active': activeSection === 'python' }">Python</a></li>
+                            <li><a href="#curl" :class="{ 'is-active': activeSection === 'curl' }">cURL</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Documentation -->
+                <div class="column is-9">
+                    <div class="content api-content">
+                        <!-- Introduction -->
+                        <section id="introduction" class="mb-6" x-intersect.full="activeSection = 'introduction'">
+                            <h2 class="title is-4">📖 Introduction</h2>
+                            <p>
+                                The Amkyaw.Dev Knowledge Base API provides programmatic access to our comprehensive knowledge base. 
+                                You can search, retrieve categories, and fetch individual knowledge items using simple RESTful endpoints.
+                            </p>
+                            
+                            <div class="message is-info">
+                                <div class="message-body">
+                                    <strong>Base URL:</strong> <code>https://amkyaw.dev/api/v1</code>
+                                </div>
+                            </div>
+
+                            <h3 class="title is-5">Key Features</h3>
+                            <ul>
+                                <li>Full-text search across all knowledge items</li>
+                                <li>Categorized content organization</li>
+                                <li>Related items suggestions</li>
+                                <li>Popular and recent items tracking</li>
+                                <li>External API integrations (GitHub, OpenAI)</li>
+                            </ul>
+                        </section>
+
+                        <!-- Authentication -->
+                        <section id="authentication" class="mb-6" x-intersect.full="activeSection = 'authentication'">
+                            <h2 class="title is-4">🔐 Authentication</h2>
+                            <p>
+                                Most endpoints are publicly accessible. For rate-limited or premium endpoints, 
+                                you'll need an API key.
+                            </p>
+
+                            <div class="box">
+                                <h4 class="title is-6">Using API Key</h4>
+                                <pre><code class="language-javascript">// Include in headers
+headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}</code></pre>
+                            </div>
+
+                            <p>To get an API key, <a href="contact.html">contact us</a> or sign up for a developer account.</p>
+                        </section>
+
+                        <!-- Base URL -->
+                        <section id="base-url" class="mb-6" x-intersect.full="activeSection = 'base-url'">
+                            <h2 class="title is-4">🌐 Base URL</h2>
+                            <p>All API endpoints are relative to this base URL:</p>
+                            <pre><code class="language-bash">https://amkyaw.dev/api/v1</code></pre>
+                            
+                            <div class="message is-warning">
+                                <div class="message-body">
+                                    <i class="fas fa-info-circle"></i>
+                                    For local development, use: <code>http://localhost:3000/api/v1</code>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Rate Limiting -->
+                        <section id="rate-limiting" class="mb-6" x-intersect.full="activeSection = 'rate-limiting'">
+                            <h2 class="title is-4">⏱️ Rate Limiting</h2>
+                            <p>API requests are rate-limited to ensure fair usage:</p>
+                            
+                            <table class="table is-bordered is-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Plan</th>
+                                        <th>Requests per minute</th>
+                                        <th>Requests per day</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Public (no key)</td>
+                                        <td>10</td>
+                                        <td>1,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Developer (free key)</td>
+                                        <td>60</td>
+                                        <td>10,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Premium</td>
+                                        <td>300</td>
+                                        <td>100,000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <p>Rate limit headers are included in all responses:</p>
+                            <pre><code class="language-http">X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 59
+X-RateLimit-Reset: 1625097600</code></pre>
+                        </section>
+
+                        <!-- Error Handling -->
+                        <section id="errors" class="mb-6" x-intersect.full="activeSection = 'errors'">
+                            <h2 class="title is-4">❌ Error Handling</h2>
+                            <p>The API uses conventional HTTP response codes:</p>
+                            
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>200</code></td>
+                                        <td>Success</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>400</code></td>
+                                        <td>Bad Request - Invalid parameters</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>401</code></td>
+                                        <td>Unauthorized - Invalid or missing API key</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>404</code></td>
+                                        <td>Not Found - Resource doesn't exist</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>429</code></td>
+                                        <td>Too Many Requests - Rate limit exceeded</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>500</code></td>
+                                        <td>Internal Server Error</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <p>Error response format:</p>
+                            <pre><code class="language-json">{
+    "error": {
+        "code": "RATE_LIMIT_EXCEEDED",
+        "message": "Too many requests. Please try again later.",
+        "details": {
+            "limit": 60,
+            "reset": 1625097600
+        }
+    },
+    "timestamp": "2024-01-01T12:00:00Z"
+}</code></pre>
+                        </section>
+
+                        <!-- Search API -->
+                        <section id="search-api" class="mb-6" x-intersect.full="activeSection = 'search-api'">
+                            <h2 class="title is-4">🔍 Search Knowledge Base</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/search</code>
+                            </div>
+
+                            <p>Search across all knowledge items with full-text search.</p>
+
+                            <h4 class="title is-6">Query Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>q</code></td>
+                                        <td>string</td>
+                                        <td>Yes</td>
+                                        <td>Search query (minimum 2 characters)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>category</code></td>
+                                        <td>string</td>
+                                        <td>No</td>
+                                        <td>Filter by category ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>limit</code></td>
+                                        <td>integer</td>
+                                        <td>No</td>
+                                        <td>Number of results (default: 20, max: 100)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>offset</code></td>
+                                        <td>integer</td>
+                                        <td>No</td>
+                                        <td>Pagination offset (default: 0)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sort</code></td>
+                                        <td>string</td>
+                                        <td>No</td>
+                                        <td>relevance, date, popularity (default: relevance)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4 class="title is-6">Example Request</h4>
+                            <pre><code class="language-bash">curl "https://amkyaw.dev/api/v1/search?q=javascript&category=programming&limit=5"</code></pre>
+
+                            <h4 class="title is-6">Example Response</h4>
+                            <pre><code class="language-json">{
+    "success": true,
+    "data": [
+        {
+            "id": "js-basics",
+            "title": "JavaScript Basics",
+            "category": "programming",
+            "excerpt": "Learn the fundamentals of JavaScript programming...",
+            "relevance": 0.95
+        }
+    ],
+    "pagination": {
+        "total": 42,
+        "limit": 5,
+        "offset": 0,
+        "next_offset": 5
+    }
+}</code></pre>
+                        </section>
+
+                        <!-- Categories API -->
+                        <section id="categories-api" class="mb-6" x-intersect.full="activeSection = 'categories-api'">
+                            <h2 class="title is-4">📂 Get All Categories</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/categories</code>
+                            </div>
+
+                            <p>Retrieve all available categories with optional item counts.</p>
+
+                            <h4 class="title is-6">Query Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>include_counts</code></td>
+                                        <td>boolean</td>
+                                        <td>Include item count per category (default: true)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>limit</code></td>
+                                        <td>integer</td>
+                                        <td>Maximum categories to return (default: 100)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4 class="title is-6">Example Response</h4>
+                            <pre><code class="language-json">{
+    "success": true,
+    "data": [
+        {
+            "id": "general",
+            "name": "General Knowledge",
+            "description": "Common questions and answers",
+            "icon": "📚",
+            "item_count": 25,
+            "subcategories": ["greetings", "faq", "about"]
+        },
+        {
+            "id": "technical",
+            "name": "Technical",
+            "description": "Programming and technical topics",
+            "icon": "💻",
+            "item_count": 42,
+            "subcategories": ["programming", "api", "tools"]
+        }
+    ]
+}</code></pre>
+                        </section>
+
+                        <!-- Single Category API -->
+                        <section id="category-api" class="mb-6" x-intersect.full="activeSection = 'category-api'">
+                            <h2 class="title is-4">📁 Get Single Category</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/category/{id}</code>
+                            </div>
+
+                            <p>Get detailed information about a specific category.</p>
+
+                            <h4 class="title is-6">Path Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>id</code></td>
+                                        <td>string</td>
+                                        <td>Category ID (e.g., 'general', 'technical')</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4 class="title is-6">Query Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>include_items</code></td>
+                                        <td>boolean</td>
+                                        <td>Include items in this category (default: false)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>limit</code></td>
+                                        <td>integer</td>
+                                        <td>Number of items to return (default: 50)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4 class="title is-6">Example Request</h4>
+                            <pre><code class="language-bash">curl "https://amkyaw.dev/api/v1/category/technical?include_items=true&limit=10"</code></pre>
+                        </section>
+
+                        <!-- Item API -->
+                        <section id="item-api" class="mb-6" x-intersect.full="activeSection = 'item-api'">
+                            <h2 class="title is-4">📄 Get Single Item</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/item/{id}</code>
+                            </div>
+
+                            <p>Retrieve a specific knowledge item by ID.</p>
+
+                            <h4 class="title is-6">Example Response</h4>
+                            <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "id": "js-closures",
+        "title": "JavaScript Closures Explained",
+        "category": "programming",
+        "content": "A closure is the combination of a function bundled together...",
+        "tags": ["javascript", "advanced", "functions"],
+        "metadata": {
+            "author": "Amkyaw",
+            "created": "2024-01-01",
+            "updated": "2024-01-15",
+            "views": 1234
+        },
+        "related": ["js-scope", "js-hoisting", "js-prototypes"]
+    }
+}</code></pre>
+                        </section>
+
+                        <!-- Popular Items API -->
+                        <section id="popular-api" class="mb-6" x-intersect.full="activeSection = 'popular-api'">
+                            <h2 class="title is-4">🔥 Get Popular Items</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/popular</code>
+                            </div>
+
+                            <p>Get the most viewed knowledge items.</p>
+
+                            <h4 class="title is-6">Query Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>limit</code></td>
+                                        <td>integer</td>
+                                        <td>Number of items (default: 10, max: 50)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>period</code></td>
+                                        <td>string</td>
+                                        <td>day, week, month, all (default: week)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <!-- Recent Items API -->
+                        <section id="recent-api" class="mb-6" x-intersect.full="activeSection = 'recent-api'">
+                            <h2 class="title is-4">🆕 Get Recent Items</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/recent</code>
+                            </div>
+
+                            <p>Get the most recently added or updated items.</p>
+
+                            <h4 class="title is-6">Query Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>limit</code></td>
+                                        <td>integer</td>
+                                        <td>Number of items (default: 10, max: 50)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <!-- Related Items API -->
+                        <section id="related-api" class="mb-6" x-intersect.full="activeSection = 'related-api'">
+                            <h2 class="title is-4">🔗 Get Related Items</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/item/{id}/related</code>
+                            </div>
+
+                            <p>Get items related to a specific knowledge item.</p>
+
+                            <h4 class="title is-6">Path Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>id</code></td>
+                                        <td>string</td>
+                                        <td>Item ID</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4 class="title is-6">Query Parameters</h4>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>limit</code></td>
+                                        <td>integer</td>
+                                        <td>Number of related items (default: 5, max: 20)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <!-- Stats API -->
+                        <section id="stats-api" class="mb-6" x-intersect.full="activeSection = 'stats-api'">
+                            <h2 class="title is-4">📊 Get Statistics</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/stats</code>
+                            </div>
+
+                            <p>Get overall knowledge base statistics.</p>
+
+                            <h4 class="title is-6">Example Response</h4>
+                            <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "total_items": 128,
+        "total_categories": 5,
+        "total_views": 15420,
+        "recent_additions": 12,
+        "popular_categories": [
+            {"name": "Technical", "views": 5234},
+            {"name": "General", "views": 4321}
+        ],
+        "daily_activity": {
+            "2024-01-01": 234,
+            "2024-01-02": 345
+        }
+    }
+}</code></pre>
+                        </section>
+
+                        <!-- Health API -->
+                        <section id="health-api" class="mb-6" x-intersect.full="activeSection = 'health-api'">
+                            <h2 class="title is-4">❤️ Health Check</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-success is-medium">GET</span>
+                                <code class="is-size-5">/health</code>
+                            </div>
+
+                            <p>Check if the API is running and healthy.</p>
+
+                            <h4 class="title is-6">Example Response</h4>
+                            <pre><code class="language-json">{
+    "status": "healthy",
+    "timestamp": "2024-01-01T12:00:00Z",
+    "version": "1.0.0",
+    "services": {
+        "database": "connected",
+        "cache": "connected",
+        "external_apis": {
+            "github": "available",
+            "openai": "available"
+        }
+    }
+}</code></pre>
+                        </section>
+
+                        <!-- External APIs -->
+                        <section id="github-api" class="mb-6" x-intersect.full="activeSection = 'github-api'">
+                            <h2 class="title is-4">🐙 GitHub Integration</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-info is-medium">GET</span>
+                                <code class="is-size-5">/external/github/{username}</code>
+                            </div>
+
+                            <p>Fetch GitHub user profile and repository information.</p>
+
+                            <h4 class="title is-6">Example Request</h4>
+                            <pre><code class="language-bash">curl "https://amkyaw.dev/api/v1/external/github/amkyaw"</code></pre>
+
+                            <h4 class="title is-6">Response Includes</h4>
+                            <ul>
+                                <li>User profile information</li>
+                                <li>Public repositories</li>
+                                <li>Contributions data</li>
+                                <li>Languages used</li>
+                            </ul>
+                        </section>
+
+                        <section id="openai-api" class="mb-6" x-intersect.full="activeSection = 'openai-api'">
+                            <h2 class="title is-4">🤖 OpenAI Integration</h2>
+                            
+                            <div class="api-endpoint">
+                                <span class="tag is-warning is-medium">POST</span>
+                                <code class="is-size-5">/external/openai</code>
+                            </div>
+
+                            <p>Send prompts to OpenAI's GPT models (requires API key).</p>
+
+                            <h4 class="title is-6">Request Body</h4>
+                            <pre><code class="language-json">{
+    "prompt": "Explain JavaScript closures in simple terms",
+    "model": "gpt-3.5-turbo",
+    "max_tokens": 500,
+    "temperature": 0.7
+}</code></pre>
+                        </section>
+
+                        <!-- Code Examples -->
+                        <section id="javascript" class="mb-6" x-intersect.full="activeSection = 'javascript'">
+                            <h2 class="title is-4">📝 JavaScript Examples</h2>
+                            
+                            <h4 class="title is-6">Using Fetch API</h4>
+                            <pre><code class="language-javascript">// Search knowledge base
+async function searchKnowledge(query) {
+    try {
+        const response = await fetch(
+            `https://amkyaw.dev/api/v1/search?q=${encodeURIComponent(query)}`
+        );
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Search failed:', error);
+    }
+}
+
+// Using our API Client
+const results = await apiClient.search('javascript', {
+    category: 'programming',
+    limit: 10
+});</code></pre>
+                        </section>
+
+                        <section id="python" class="mb-6" x-intersect.full="activeSection = 'python'">
+                            <h2 class="title is-4">🐍 Python Examples</h2>
+                            
+                            <pre><code class="language-python">import requests
+
+class AmkyawAPI:
+    def __init__(self, base_url="https://amkyaw.dev/api/v1"):
+        self.base_url = base_url
+    
+    def search(self, query, category=None, limit=20):
+        params = {'q': query, 'limit': limit}
+        if category:
+            params['category'] = category
+        
+        response = requests.get(f"{self.base_url}/search", params=params)
+        return response.json()
+    
+    def get_categories(self):
+        response = requests.get(f"{self.base_url}/categories")
+        return response.json()
+
+# Usage
+api = AmkyawAPI()
+results = api.search("python programming", limit=5)
+categories = api.get_categories()</code></pre>
+                        </section>
+
+                        <section id="curl" class="mb-6" x-intersect.full="activeSection = 'curl'">
+                            <h2 class="title is-4">🔧 cURL Commands</h2>
+                            
+                            <pre><code class="language-bash"># Search
+curl "https://amkyaw.dev/api/v1/search?q=javascript"
+
+# Get categories
+curl "https://amkyaw.dev/api/v1/categories"
+
+# Get specific category
+curl "https://amkyaw.dev/api/v1/category/technical?include_items=true"
+
+# Get popular items
+curl "https://amkyaw.dev/api/v1/popular?limit=5"
+
+# Health check
+curl "https://amkyaw.dev/api/v1/health"</code></pre>
+                        </section>
+
+                        <!-- SDKs and Libraries -->
+                        <section class="mb-6">
+                            <h2 class="title is-4">📦 SDKs & Libraries</h2>
+                            
+                            <div class="columns is-multiline">
+                                <div class="column is-6">
+                                    <div class="box">
+                                        <h4 class="title is-6">JavaScript/Node.js</h4>
+                                        <p>Official npm package</p>
+                                        <pre><code class="language-bash">npm install amkyaw-api-client</code></pre>
+                                        <pre><code class="language-javascript">const AmkyawAPI = require('amkyaw-api-client');
+const api = new AmkyawAPI('YOUR_API_KEY');</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="column is-6">
+                                    <div class="box">
+                                        <h4 class="title is-6">Python</h4>
+                                        <p>Official PyPI package</p>
+                                        <pre><code class="language-bash">pip install amkyaw-api</code></pre>
+                                        <pre><code class="language-python">from amkyaw_api import Client
+client = Client(api_key='YOUR_API_KEY')</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Support -->
+                        <section class="mb-6">
+                            <div class="message is-primary">
+                                <div class="message-header">
+                                    <p>Need Help?</p>
+                                </div>
+                                <div class="message-body">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <a href="api-playground.html" class="button is-fullwidth">
+                                                <span class="icon"><i class="fas fa-flask"></i></span>
+                                                <span>Try API Playground</span>
+                                            </a>
+                                        </div>
+                                        <div class="column">
+                                            <a href="contact.html" class="button is-fullwidth">
+                                                <span class="icon"><i class="fas fa-envelope"></i></span>
+                                                <span>Contact Support</span>
+                                            </a>
+                                        </div>
+                                        <div class="column">
+                                            <a href="https://github.com/amkyaw/amkyaw-dev-website" class="button is-fullwidth">
+                                                <span class="icon"><i class="fab fa-github"></i></span>
+                                                <span>GitHub</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Amkyaw.Dev Knowledge Base API</strong> by <a href="https://amkyaw.dev">Amkyaw</a>.
+                    Documentation licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+                </p>
+                <p>
+                    <a href="../index.html">Home</a> |
+                    <a href="api-docs.html">API</a> |
+                    <a href="about.html">About</a> |
+                    <a href="contact.html">Contact</a> |
+                    <a href="https://github.com/amkyaw/amkyaw-dev-website">GitHub</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function apiDocs() {
+            return {
+                isMenuOpen: false,
+                isDark: localStorage.getItem('theme') === 'dark',
+                activeSection: 'introduction',
+                
+                init() {
+                    // Initialize syntax highlighting
+                    hljs.highlightAll();
+                    
+                    // Watch for scroll to update active section
+                    window.addEventListener('scroll', () => {
+                        this.updateActiveSection();
+                    });
+                    
+                    // Apply theme
+                    this.applyTheme();
+                },
+                
+                toggleMenu() {
+                    this.isMenuOpen = !this.isMenuOpen;
+                },
+                
+                toggleTheme() {
+                    this.isDark = !this.isDark;
+                    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+                    this.applyTheme();
+                },
+                
+                applyTheme() {
+                    if (this.isDark) {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.removeAttribute('data-theme');
+                    }
+                },
+                
+                updateActiveSection() {
+                    const sections = document.querySelectorAll('section[id]');
+                    const scrollPosition = window.scrollY + 100;
+                    
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        const sectionBottom = sectionTop + section.offsetHeight;
+                        
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                            this.activeSection = section.id;
+                        }
+                    });
+                }
+            };
+        }
+    </script>
+
+    <style>
+        .api-menu.is-sticky {
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .api-menu .menu-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .api-menu .menu-list a.is-active {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .api-endpoint {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        [data-theme="dark"] .api-endpoint {
+            background: #2a2a2a;
+        }
+        
+        .api-content section {
+            scroll-margin-top: 20px;
+        }
+        
+        pre {
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        table code {
+            white-space: nowrap;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .api-menu.is-sticky {
+                position: relative;
+                top: 0;
+                max-height: none;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</body>
+</html>
