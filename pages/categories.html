@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en" x-data="categoriesApp()" x-init="init">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - Amkyaw.Dev Knowledge Base</title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- API Client -->
+    <script src="../js/api-client.js"></script>
+</head>
+<body :class="{ 'dark-theme': isDark }">
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="../index.html">
+                    <img src="../assets/images/logo.svg" alt="Amkyaw.Dev" width="112" height="28">
+                </a>
+                
+                <a role="button" class="navbar-burger" :class="{ 'is-active': isMenuOpen }" 
+                   @click="toggleMenu" aria-label="menu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div class="navbar-menu" :class="{ 'is-active': isMenuOpen }">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="../index.html">Home</a>
+                    <a class="navbar-item" href="search.html">Search</a>
+                    <a class="navbar-item is-active" href="categories.html">Categories</a>
+                    <a class="navbar-item" href="api-docs.html">API</a>
+                    <a class="navbar-item" href="about.html">About</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <button class="button is-ghost" @click="toggleTheme">
+                            <i class="fas" :class="isDark ? 'fa-sun' : 'fa-moon'"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero is-primary">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title">
+                    <i class="fas fa-folder-tree"></i>
+                    Knowledge Categories
+                </h1>
+                <p class="subtitle">
+                    Browse our knowledge base by category
+                </p>
+                
+                <!-- Search in Categories -->
+                <div class="columns is-centered">
+                    <div class="column is-6">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" 
+                                       x-model="searchQuery"
+                                       @input="filterCategories"
+                                       placeholder="Search categories...">
+                                <span class="icon is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Grid -->
+    <section class="section">
+        <div class="container">
+            <!-- Loading State -->
+            <div class="has-text-centered py-6" x-show="loading">
+                <div class="loader"></div>
+                <p class="mt-3">Loading categories...</p>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="columns is-multiline" x-show="!loading">
+                <!-- Main Categories -->
+                <template x-for="category in filteredCategories" :key="category.id">
+                    <div class="column is-4">
+                        <div class="card category-card" @click="viewCategory(category.id)">
+                            <div class="card-content">
+                                <!-- Category Icon & Title -->
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-48x48">
+                                            <i class="fas fa-3x" :class="category.icon"></i>
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <h3 class="title is-4 mb-1" x-text="category.name"></h3>
+                                        <p class="subtitle is-6 has-text-grey" x-text="category.description"></p>
+                                    </div>
+                                </div>
+
+                                <!-- Stats -->
+                                <div class="level is-mobile mb-3">
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">Items</p>
+                                            <p class="title is-5" x-text="category.item_count || 0"></p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">Subcategories</p>
+                                            <p class="title is-5" x-text="category.subcategories?.length || 0"></p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">Views</p>
+                                            <p class="title is-5" x-text="category.views || '0'"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Subcategories Preview -->
+                                <div class="tags" x-show="category.subcategories">
+                                    <template x-for="sub in category.subcategories?.slice(0,3)" :key="sub">
+                                        <span class="tag is-primary is-light" x-text="sub"></span>
+                                    </template>
+                                    <span class="tag" x-show="category.subcategories?.length > 3">
+                                        +<span x-text="category.subcategories.length - 3"></span> more
+                                    </span>
+                                </div>
+
+                                <!-- Popular Items Preview -->
+                                <div class="mt-3" x-show="category.popular_items">
+                                    <p class="is-size-7 has-text-grey mb-1">Popular in this category:</p>
+                                    <ul class="popular-preview">
+                                        <template x-for="item in category.popular_items?.slice(0,2)" :key="item">
+                                            <li class="is-size-7">
+                                                <i class="fas fa-circle fa-2xs has-text-primary mr-1"></i>
+                                                <span x-text="item"></span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Card Footer -->
+                            <footer class="card-footer">
+                                <a href="#" class="card-footer-item" @click.prevent="viewCategory(category.id)">
+                                    <span class="icon"><i class="fas fa-folder-open"></i></span>
+                                    <span>Browse</span>
+                                </a>
+                                <a href="#" class="card-footer-item" @click.prevent="viewCategoryItems(category.id)">
+                                    <span class="icon"><i class="fas fa-list"></i></span>
+                                    <span>All Items</span>
+                                </a>
+                                <a href="#" class="card-footer-item" @click.prevent="subscribeCategory(category)">
+                                    <span class="icon"><i class="fas fa-bell"></i></span>
+                                    <span>Subscribe</span>
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- No Results -->
+            <div class="has-text-centered py-6" x-show="!loading && filteredCategories.length === 0">
+                <i class="fas fa-folder-open fa-4x has-text-grey-light mb-4"></i>
+                <h3 class="title is-4">No categories found</h3>
+                <p class="subtitle is-6">Try a different search term</p>
+                <button class="button is-primary" @click="resetSearch">
+                    <span class="icon"><i class="fas fa-undo"></i></span>
+                    <span>Clear Search</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Stats Section -->
+    <section class="section has-background-light">
+        <div class="container">
+            <h2 class="title is-4 has-text-centered mb-6">Knowledge Base Statistics</h2>
+            
+            <div class="columns is-centered">
+                <div class="column is-10">
+                    <div class="columns is-multiline">
+                        <!-- Total Items -->
+                        <div class="column is-3">
+                            <div class="box has-text-centered stat-card">
+                                <span class="icon is-large">
+                                    <i class="fas fa-database fa-3x has-text-primary"></i>
+                                </span>
+                                <p class="heading">Total Items</p>
+                                <p class="title" x-text="stats.total_items || 128"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Total Categories -->
+                        <div class="column is-3">
+                            <div class="box has-text-centered stat-card">
+                                <span class="icon is-large">
+                                    <i class="fas fa-folder fa-3x has-text-primary"></i>
+                                </span>
+                                <p class="heading">Categories</p>
+                                <p class="title" x-text="stats.total_categories || 5"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Most Active Category -->
+                        <div class="column is-3">
+                            <div class="box has-text-centered stat-card">
+                                <span class="icon is-large">
+                                    <i class="fas fa-fire fa-3x has-text-primary"></i>
+                                </span>
+                                <p class="heading">Most Active</p>
+                                <p class="title is-6" x-text="stats.most_active || 'Technical'"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Last Updated -->
+                        <div class="column is-3">
+                            <div class="box has-text-centered stat-card">
+                                <span class="icon is-large">
+                                    <i class="fas fa-clock fa-3x has-text-primary"></i>
+                                </span>
+                                <p class="heading">Last Updated</p>
+                                <p class="title is-6" x-text="stats.last_updated || 'Today'"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories Carousel -->
+    <section class="section">
+        <div class="container">
+            <h2 class="title is-4 has-text-centered mb-6">Featured Categories</h2>
+            
+            <div class="carousel-container" x-data="carousel()">
+                <div class="carousel-track" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
+                    <template x-for="category in featuredCategories" :key="category.id">
+                        <div class="carousel-slide">
+                            <div class="box featured-card">
+                                <div class="columns is-vcentered">
+                                    <div class="column is-4 has-text-centered">
+                                        <i class="fas fa-5x" :class="category.icon"></i>
+                                    </div>
+                                    <div class="column is-8">
+                                        <h3 class="title is-4" x-text="category.name"></h3>
+                                        <p class="mb-3" x-text="category.description"></p>
+                                        <div class="buttons">
+                                            <a class="button is-primary is-small" 
+                                               @click="viewCategory(category.id)">
+                                                Browse Category
+                                            </a>
+                                            <a class="button is-light is-small"
+                                               @click="viewCategoryItems(category.id)">
+                                                View Items
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <!-- Carousel Controls -->
+                <button class="carousel-button prev" @click="prevSlide" 
+                        :disabled="currentSlide === 0">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-button next" @click="nextSlide"
+                        :disabled="currentSlide === featuredCategories.length - 1">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- Carousel Dots -->
+                <div class="carousel-dots">
+                    <template x-for="(_, index) in featuredCategories" :key="index">
+                        <button class="dot" :class="{ 'is-active': currentSlide === index }"
+                                @click="currentSlide = index"></button>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Activity Timeline -->
+    <section class="section has-background-light">
+        <div class="container">
+            <h2 class="title is-4 has-text-centered mb-6">Recent Category Activity</h2>
+            
+            <div class="timeline">
+                <template x-for="activity in timeline" :key="activity.id">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" :class="activity.type"></div>
+                        <div class="timeline-content">
+                            <p class="heading" x-text="activity.time"></p>
+                            <p>
+                                <span class="has-text-weight-bold" x-text="activity.category"></span>
+                                <span x-text="activity.description"></span>
+                            </p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Amkyaw.Dev Knowledge Base</strong> by <a href="https://amkyaw.dev">Amkyaw</a>.
+                    Organized knowledge for developers.
+                </p>
+                <p>
+                    <a href="../index.html">Home</a> |
+                    <a href="search.html">Search</a> |
+                    <a href="api-docs.html">API</a> |
+                    <a href="about.html">About</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function categoriesApp() {
+            return {
+                // UI State
+                isMenuOpen: false,
+                isDark: localStorage.getItem('theme') === 'dark',
+                loading: true,
+                searchQuery: '',
+                
+                // Data
+                categories: [],
+                filteredCategories: [],
+                featuredCategories: [],
+                stats: {},
+                timeline: [],
+                
+                async init() {
+                    this.applyTheme();
+                    await this.loadCategories();
+                    await this.loadStats();
+                    this.loadTimeline();
+                },
+                
+                toggleMenu() {
+                    this.isMenuOpen = !this.isMenuOpen;
+                },
+                
+                toggleTheme() {
+                    this.isDark = !this.isDark;
+                    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+                    this.applyTheme();
+                },
+                
+                applyTheme() {
+                    if (this.isDark) {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.removeAttribute('data-theme');
+                    }
+                },
+                
+                async loadCategories() {
+                    try {
+                        const response = await apiClient.getCategories({ include_counts: true });
+                        this.categories = response.data;
+                    } catch (error) {
+                        // Mock categories for demo
+                        this.categories = this.getMockCategories();
+                    }
+                    
+                    this.filterCategories();
+                    this.featuredCategories = this.categories.filter(c => c.featured).slice(0, 5);
+                    this.loading = false;
+                },
+                
+                async loadStats() {
+                    try {
+                        const response = await apiClient.getStats();
+                        this.stats = response.data;
+                    } catch (error) {
+                        // Mock stats
+                        this.stats = {
+                            total_items: 128,
+                            total_categories: 5,
+                            most_active: 'Technical',
+                            last_updated: '2 hours ago'
+                        };
+                    }
+                },
+                
+                loadTimeline() {
+                    // Mock timeline data
+                    this.timeline = [
+                        {
+                            id: 1,
+                            type: 'add',
+                            category: 'Technical',
+                            description: 'added 3 new articles about JavaScript',
+                            time: '5 minutes ago'
+                        },
+                        {
+                            id: 2,
+                            type: 'update',
+                            category: 'Chatbot',
+                            description: 'updated NLP guide',
+                            time: '1 hour ago'
+                        },
+                        {
+                            id: 3,
+                            type: 'popular',
+                            category: 'Coder',
+                            description: 'reached 1000 views today',
+                            time: '3 hours ago'
+                        },
+                        {
+                            id: 4,
+                            type: 'add',
+                            category: 'Image',
+                            description: 'added AI image generation tutorial',
+                            time: '5 hours ago'
+                        }
+                    ];
+                },
+                
+                filterCategories() {
+                    if (!this.searchQuery) {
+                        this.filteredCategories = this.categories;
+                        return;
+                    }
+                    
+                    const query = this.searchQuery.toLowerCase();
+                    this.filteredCategories = this.categories.filter(cat => 
+                        cat.name.toLowerCase().includes(query) ||
+                        cat.description?.toLowerCase().includes(query) ||
+                        cat.subcategories?.some(sub => sub.toLowerCase().includes(query))
+                    );
+                },
+                
+                resetSearch() {
+                    this.searchQuery = '';
+                    this.filteredCategories = this.categories;
+                },
+                
+                viewCategory(id) {
+                    window.location.href = `category.html?id=${id}`;
+                },
+                
+                viewCategoryItems(id) {
+                    window.location.href = `search.html?category=${id}`;
+                },
+                
+                subscribeCategory(category) {
+                    let subscriptions = JSON.parse(localStorage.getItem('category_subscriptions') || '[]');
+                    if (!subscriptions.includes(category.id)) {
+                        subscriptions.push(category.id);
+                        localStorage.setItem('category_subscriptions', JSON.stringify(subscriptions));
+                        alert(`✅ Subscribed to ${category.name}`);
+                    } else {
+                        alert(`Already subscribed to ${category.name}`);
+                    }
+                },
+                
+                // Mock data
+                getMockCategories() {
+                    return [
+                        {
+                            id: 'general',
+                            name: 'General Knowledge',
+                            description: 'Common questions and general information',
+                            icon: 'fa-globe',
+                            item_count: 25,
+                            subcategories: ['greetings', 'faq', 'about', 'contact'],
+                            popular_items: ['How to get started', 'Frequently asked questions'],
+                            views: '1.2k',
+                            featured: true,
+                            color: 'primary'
+                        },
+                        {
+                            id: 'technical',
+                            name: 'Technical',
+                            description: 'Programming, tools, and technical topics',
+                            icon: 'fa-code',
+                            item_count: 42,
+                            subcategories: ['programming', 'api', 'tools', 'frameworks'],
+                            popular_items: ['JavaScript basics', 'RESTful API design'],
+                            views: '3.4k',
+                            featured: true,
+                            color: 'info'
+                        },
+                        {
+                            id: 'chatbot',
+                            name: 'Chatbot',
+                            description: 'Chatbot development and NLP',
+                            icon: 'fa-robot',
+                            item_count: 18,
+                            subcategories: ['general', 'nlp', 'platforms', 'integration'],
+                            popular_items: ['Building your first chatbot', 'NLP fundamentals'],
+                            views: '892',
+                            featured: true,
+                            color: 'success'
+                        },
+                        {
+                            id: 'coder',
+                            name: 'Coder',
+                            description: 'Programming languages and algorithms',
+                            icon: 'fa-laptop-code',
+                            item_count: 31,
+                            subcategories: ['languages', 'algorithms', 'frameworks', 'best-practices'],
+                            popular_items: ['Python for beginners', 'Data structures'],
+                            views: '2.1k',
+                            featured: true,
+                            color: 'warning'
+                        },
+                        {
+                            id: 'image',
+                            name: 'Image Processing',
+                            description: 'Image formats, editing, and AI image generation',
+                            icon: 'fa-image',
+                            item_count: 12,
+                            subcategories: ['formats', 'editing', 'ai-images', 'optimization'],
+                            popular_items: ['Image formats explained', 'AI image generation guide'],
+                            views: '567',
+                            featured: false,
+                            color: 'danger'
+                        },
+                        {
+                            id: 'security',
+                            name: 'Security',
+                            description: 'Cybersecurity and best practices',
+                            icon: 'fa-shield-alt',
+                            item_count: 15,
+                            subcategories: ['authentication', 'encryption', 'best-practices'],
+                            popular_items: ['Web security basics', 'Authentication methods'],
+                            views: '789',
+                            featured: false,
+                            color: 'dark'
+                        }
+                    ];
+                }
+            };
+        }
+
+        // Carousel Component
+        function carousel() {
+            return {
+                currentSlide: 0,
+                
+                nextSlide() {
+                    if (this.currentSlide < this.$el.querySelectorAll('.carousel-slide').length - 1) {
+                        this.currentSlide++;
+                    }
+                },
+                
+                prevSlide() {
+                    if (this.currentSlide > 0) {
+                        this.currentSlide--;
+                    }
+                }
+            };
+        }
+    </script>
+
+    <style>
+        .category-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid transparent;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .category-card .media-left i {
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover .media-left i {
+            transform: scale(1.1);
+        }
+        
+        .popular-preview li {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .carousel-slide {
+            flex: 0 0 100%;
+            padding: 0 20px;
+        }
+        
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-button:hover:not(:disabled) {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .carousel-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .carousel-button.prev {
+            left: 10px;
+        }
+        
+        .carousel-button.next {
+            right: 10px;
+        }
+        
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.is-active {
+            background: var(--primary-color);
+            transform: scale(1.3);
+        }
+        
+        .dot:hover {
+            background: var(--primary-color);
+        }
+        
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ddd;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: 12px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid;
+            z-index: 1;
+        }
+        
+        .timeline-marker.add {
+            border-color: var(--primary-color);
+        }
+        
+        .timeline-marker.update {
+            border-color: var(--warning);
+        }
+        
+        .timeline-marker.popular {
+            border-color: var(--danger);
+        }
+        
+        .timeline-content {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        [data-theme="dark"] .timeline-content {
+            background: #2a2a2a;
+        }
+        
+        /* Stat Cards */
+        .stat-card {
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .carousel-button {
+                display: none;
+            }
+            
+            .timeline::before {
+                left: 15px;
+            }
+            
+            .timeline-item {
+                padding-left: 40px;
+            }
+        }
+        
+        /* Dark Theme Adjustments */
+        [data-theme="dark"] .carousel-button {
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        [data-theme="dark"] .dot {
+            background: #444;
+        }
+    </style>
+</body>
+</html>
