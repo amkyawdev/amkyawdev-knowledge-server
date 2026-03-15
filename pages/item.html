@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" x-data="itemApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="item ? item.question : 'Item - Knowledge Server'"></title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Highlight.js for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        /* Custom styles for item page */
+        .example-box {
+            background-color: #f5f5f5 !important;  /* Light gray background */
+            border-left: 4px solid #0b93f6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        [data-theme="dark"] .example-box {
+            background-color: #2a2a2a !important;  /* Dark gray for dark theme */
+            border-left-color: #6f42c1;
+            color: #e5e5e5;
+        }
+        
+        .keyword-tag {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .keyword-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .related-item {
+            transition: all 0.2s ease;
+        }
+        
+        .related-item:hover {
+            background-color: rgba(11, 147, 246, 0.05);
+            transform: translateX(5px);
+        }
+        
+        [data-theme="dark"] .related-item:hover {
+            background-color: rgba(111, 66, 193, 0.2);
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .example-box:hover .copy-button {
+            opacity: 1;
+        }
+        
+        .example-container {
+            position: relative;
+        }
+        
+        .print-only {
+            display: none;
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .print-only {
+                display: block;
+            }
+            .example-box {
+                background-color: #f5f5f5 !important;
+                border: 1px solid #ddd;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar is-primary no-print" x-data="{ mobileMenuOpen: false }">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="../index.html">
+                <img src="../assets/images/logo.svg" alt="Logo" style="max-height: 40px">
+                <span class="has-text-weight-bold ml-2">Knowledge Server</span>
+            </a>
+            <a role="button" class="navbar-burger" :class="{ 'is-active': mobileMenuOpen }" @click="mobileMenuOpen = !mobileMenuOpen">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        
+        <div class="navbar-menu" :class="{ 'is-active': mobileMenuOpen }">
+            <div class="navbar-start">
+                <a class="navbar-item" href="../index.html">Home</a>
+                <a class="navbar-item" href="search.html">Search</a>
+                <a class="navbar-item" href="categories.html">Categories</a>
+                <a class="navbar-item" href="about.html">About</a>
+                <a class="navbar-item" href="contact.html">Contact</a>
+            </div>
+            
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <button class="button is-light" @click="toggleTheme">
+                        <i class="fas" :class="theme === 'dark' ? 'fa-sun' : 'fa-moon'"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Loading State -->
+    <section class="section" x-show="!item">
+        <div class="container has-text-centered py-6">
+            <div class="loading mb-4"></div>
+            <p class="has-text-grey">Loading content...</p>
+        </div>
+    </section>
+
+    <!-- Item Content -->
+    <section class="section" x-show="item" x-cloak>
+        <div class="container">
+            <div class="columns">
+                <div class="column is-three-quarters">
+                    <!-- Breadcrumb -->
+                    <nav class="breadcrumb no-print" aria-label="breadcrumbs">
+                        <ul>
+                            <li><a :href="`category.html?cat=${categoryName}`" x-text="getCategoryDisplay(categoryName)"></a></li>
+                            <li class="is-active"><a href="#" aria-current="page" x-text="item?.question.substring(0,50) + (item?.question.length > 50 ? '...' : '')"></a></li>
+                        </ul>
+                    </nav>
+
+                    <!-- Main Content -->
+                    <div class="card">
+                        <div class="card-content">
+                            <!-- Title Section -->
+                            <div class="media">
+                                <div class="media-content">
+                                    <div class="is-flex is-justify-content-space-between is-align-items-start">
+                                        <div>
+                                            <p class="title is-2" x-text="item.question"></p>
+                                            <p class="subtitle is-6 has-text-grey mt-2">
+                                                <i class="far fa-clock mr-1"></i>
+                                                <span x-text="formatDate(item.updated || item.created)"></span>
+                                                <span class="mx-2">•</span>
+                                                <i class="far fa-eye mr-1"></i>
+                                                <span x-text="item.views || 0"> views</span>
+                                            </p>
+                                        </div>
+                                        <div class="tags are-medium">
+                                            <template x-for="keyword in item.keywords" :key="keyword">
+                                                <span class="tag is-info is-light keyword-tag" 
+                                                      @click="searchKeyword(keyword)"
+                                                      x-text="keyword"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Answer Content -->
+                            <div class="content mt-5">
+                                <!-- Render markdown-like content -->
+                                <template x-for="(part, index) in parsedContent" :key="index">
+                                    <div>
+                                        <!-- Regular text -->
+                                        <template x-if="part.type === 'text'">
+                                            <p class="mb-4" x-html="part.content"></p>
+                                        </template>
+                                        
+                                        <!-- Code block -->
+                                        <template x-if="part.type === 'code'">
+                                            <div class="example-container">
+                                                <div class="example-box" x-html="part.content"></div>
+                                                <button class="button is-small is-light copy-button no-print" 
+                                                        @click="copyToClipboard(part.raw)">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </template>
+                                        
+                                        <!-- Example box (custom) -->
+                                        <template x-if="part.type === 'example'">
+                                            <div class="example-container">
+                                                <div class="example-box" x-html="part.content"></div>
+                                                <button class="button is-small is-light copy-button no-print" 
+                                                        @click="copyToClipboard(part.raw)">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </template>
+                                        
+                                        <!-- Heading -->
+                                        <template x-if="part.type === 'heading'">
+                                            <h3 class="title is-4 mt-5 mb-3" x-html="part.content"></h3>
+                                        </template>
+                                        
+                                        <!-- List -->
+                                        <template x-if="part.type === 'list'">
+                                            <div class="content">
+                                                <ul>
+                                                    <template x-for="item in part.items" :key="item">
+                                                        <li x-html="item"></li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Metadata -->
+                            <div class="columns is-multiline mt-6 pt-4" style="border-top: 1px solid #dbdbdb;">
+                                <div class="column is-half">
+                                    <div class="field is-grouped is-grouped-multiline">
+                                        <div class="control">
+                                            <div class="tags has-addons">
+                                                <span class="tag is-dark">ID</span>
+                                                <span class="tag is-info" x-text="item.id"></span>
+                                            </div>
+                                        </div>
+                                        <div class="control">
+                                            <div class="tags has-addons">
+                                                <span class="tag is-dark">Category</span>
+                                                <span class="tag is-primary" x-text="getCategoryDisplay(categoryName)"></span>
+                                            </div>
+                                        </div>
+                                        <div class="control">
+                                            <div class="tags has-addons">
+                                                <span class="tag is-dark">Language</span>
+                                                <span class="tag is-success" x-text="item.language || 'English'"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-half has-text-right no-print">
+                                    <button class="button is-light is-small" @click="copyLink" title="Copy link">
+                                        <i class="fas fa-link"></i>
+                                    </button>
+                                    <button class="button is-light is-small" @click="printItem" title="Print">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="button is-light is-small" @click="shareItem" title="Share">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                    <a :href="`https://twitter.com/intent/tweet?text=${encodeURIComponent(item.question)}&url=${window.location.href}`" 
+                                       target="_blank" class="button is-info is-small">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Items -->
+                    <div class="card mt-5 no-print" x-show="relatedItems.length > 0">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <i class="fas fa-link mr-2"></i>
+                                Related Items
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            <div class="list">
+                                <template x-for="item in relatedItems" :key="item.id">
+                                    <a :href="`item.html?category=${categoryName}&id=${item.id}`" 
+                                       class="list-item p-3 related-item is-flex is-align-items-center">
+                                        <i class="fas fa-file-alt has-text-info mr-3"></i>
+                                        <span x-text="item.question"></span>
+                                        <i class="fas fa-arrow-right ml-auto has-text-grey-light"></i>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="column no-print">
+                    <!-- Table of Contents -->
+                    <div class="card mb-4" x-show="toc.length > 0">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <i class="fas fa-list mr-2"></i>
+                                Contents
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu">
+                                <ul class="menu-list">
+                                    <template x-for="(item, index) in toc" :key="index">
+                                        <li>
+                                            <a :href="'#section-' + index" 
+                                               @click.prevent="scrollToSection(index)"
+                                               x-text="item"></a>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <i class="fas fa-bolt mr-2"></i>
+                                Quick Actions
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            <div class="buttons are-small">
+                                <button class="button is-fullwidth mb-2" @click="copyLink">
+                                    <i class="fas fa-link mr-2"></i> Copy Link
+                                </button>
+                                <button class="button is-fullwidth mb-2" @click="printItem">
+                                    <i class="fas fa-print mr-2"></i> Print
+                                </button>
+                                <button class="button is-fullwidth mb-2" @click="downloadAsMarkdown">
+                                    <i class="fas fa-download mr-2"></i> Download
+                                </button>
+                                <button class="button is-fullwidth mb-2" @click="reportIssue">
+                                    <i class="fas fa-flag mr-2"></i> Report Issue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Info -->
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <i class="fas fa-folder mr-2"></i>
+                                Category Info
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <i :class="'fas fa-' + getCategoryIcon(categoryName) + ' fa-2x has-text-primary'"></i>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-6" x-text="getCategoryDisplay(categoryName)"></p>
+                                    <p class="subtitle is-7" x-text="categoryName"></p>
+                                    <progress class="progress is-primary is-small" value="65" max="100">65%</progress>
+                                    <p class="is-size-7 has-text-grey">65% of items viewed</p>
+                                </div>
+                            </div>
+                            <a :href="`category.html?cat=${categoryName}`" class="button is-fullwidth is-light mt-3">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Back to Category
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Print Version -->
+    <div class="print-only" x-show="item">
+        <div class="container p-5">
+            <h1 class="title is-1" x-text="item.question"></h1>
+            <div class="content" x-html="item.answer"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer no-print">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Knowledge Server</strong> by <a href="https://amkyaw.dev">Amkyaw.Dev</a>. 
+                Source code on <a href="https://github.com/amkyawdev/knowledge-server">GitHub</a>.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/alpine-init.js"></script>
+    <script src="../js/theme-switcher.js"></script>
+    <script src="../js/utils.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('itemApp', () => ({
+                categoryName: '',
+                itemId: null,
+                item: null,
+                relatedItems: [],
+                parsedContent: [],
+                toc: [],
+                theme: localStorage.getItem('theme') || 'light',
+                
+                init() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    this.categoryName = urlParams.get('category') || 'general';
+                    this.itemId = parseInt(urlParams.get('id')) || 1;
+                    this.loadItem();
+                    
+                    // Listen for theme changes
+                    window.addEventListener('toggle-theme', () => {
+                        this.toggleTheme();
+                    });
+                },
+                
+                async loadItem() {
+                    // Simulate API call with mock data
+                    setTimeout(() => {
+                        this.item = {
+                            id: this.itemId,
+                            question: `What is ${this.categoryName} and how does it work?`,
+                            answer: `# Introduction to ${this.categoryName}
+                            
+This is a detailed explanation about ${this.categoryName}. It covers all the important aspects and provides examples.
+
+## Key Points
+
+• Point 1 about ${this.categoryName}
+• Point 2 about ${this.categoryName}
+• Point 3 about ${this.categoryName}
+
+## Code Example
+
+\`\`\`javascript
+function example() {
+    console.log('Hello from ${this.categoryName}');
+    
+    // This is a sample function
+    const data = {
+        name: '${this.categoryName}',
+        version: '1.0.0'
+    };
+    
+    return data;
+}
+
+// Call the function
+const result = example();
+console.log(result);
+\`\`\`
+
+## Example Usage
+
+Here's how you can use it:
+
+\`\`\`html
+<div class="example-box">
+    <p>This is an example HTML block with gray background</p>
+    <button class="button is-primary">Click me</button>
+</div>
+\`\`\`
+
+## Additional Information
+
+For more information, check the documentation:
+
+1. Read the official docs
+2. Check out examples
+3. Join the community
+
+## Tips and Tricks
+
+• Always use the latest version
+• Follow best practices
+• Test thoroughly
+
+## Common Questions
+
+**Q:** How do I get started?
+**A:** Start with the basics and gradually move to advanced topics.
+
+**Q:** Is it free to use?
+**A:** Yes, it's completely free and open source!`,
+                            keywords: [this.categoryName, 'example', 'guide', 'tutorial', 'help', 'tips', 'code'],
+                            related: [2, 3, 4, 5],
+                            updated: '2026-03-15',
+                            created: '2026-01-10',
+                            views: 1234,
+                            language: 'English'
+                        };
+                        
+                        this.relatedItems = this.item.related.map(id => ({
+                            id: id,
+                            question: `Related Question ${id} about ${this.categoryName}`
+                        }));
+                        
+                        this.parseContent();
+                        this.generateToc();
+                        
+                        this.$nextTick(() => {
+                            hljs.highlightAll();
+                        });
+                    }, 500);
+                },
+                
+                parseContent() {
+                    if (!this.item) return;
+                    
+                    const lines = this.item.answer.split('\n');
+                    const parsed = [];
+                    let currentCodeBlock = null;
+                    let currentList = null;
+                    
+                    lines.forEach(line => {
+                        // Check for code blocks
+                        if (line.startsWith('```')) {
+                            if (currentCodeBlock === null) {
+                                currentCodeBlock = { type: 'code', content: [], raw: [] };
+                            } else {
+                                parsed.push({
+                                    type: 'code',
+                                    content: '<pre><code>' + currentCodeBlock.content.join('\n') + '</code></pre>',
+                                    raw: currentCodeBlock.raw.join('\n')
+                                });
+                                currentCodeBlock = null;
+                            }
+                            return;
+                        }
+                        
+                        if (currentCodeBlock) {
+                            currentCodeBlock.content.push(hljs.highlightAuto(line).value);
+                            currentCodeBlock.raw.push(line);
+                            return;
+                        }
+                        
+                        // Check for headings
+                        if (line.startsWith('# ')) {
+                            parsed.push({ type: 'heading', content: line.substring(2) });
+                        }
+                        else if (line.startsWith('## ')) {
+                            parsed.push({ type: 'heading', content: line.substring(3) });
+                        }
+                        // Check for lists
+                        else if (line.startsWith('• ') || line.startsWith('- ')) {
+                            if (!currentList) {
+                                currentList = { type: 'list', items: [] };
+                            }
+                            currentList.items.push(line.substring(2));
+                        }
+                        else if (line.startsWith('**') && line.endsWith('**')) {
+                            // Bold text
+                            parsed.push({ type: 'text', content: '<strong>' + line.substring(2, line.length-2) + '</strong>' });
+                        }
+                        else if (line.trim() === '') {
+                            if (currentList) {
+                                parsed.push(currentList);
+                                currentList = null;
+                            }
+                            parsed.push({ type: 'text', content: '<br>' });
+                        }
+                        else {
+                            if (currentList) {
+                                parsed.push(currentList);
+                                currentList = null;
+                            }
+                            parsed.push({ type: 'text', content: line });
+                        }
+                    });
+                    
+                    this.parsedContent = parsed;
+                },
+                
+                generateToc() {
+                    this.toc = this.parsedContent
+                        .filter(p => p.type === 'heading')
+                        .map(p => p.content);
+                },
+                
+                scrollToSection(index) {
+                    const elements = document.querySelectorAll('h3.title');
+                    if (elements[index]) {
+                        elements[index].scrollIntoView({ behavior: 'smooth' });
+                    }
+                },
+                
+                formatDate(dateString) {
+                    return Utils.formatDate(dateString);
+                },
+                
+                getCategoryDisplay(cat) {
+                    const names = {
+                        general: 'အထွေထွေ',
+                        technical: 'နည်းပညာ',
+                        chatbot: 'Chatbot',
+                        coder: 'Coder',
+                        image: 'Image',
+                        support: 'အကူအညီ'
+                    };
+                    return names[cat] || cat;
+                },
+                
+                getCategoryIcon(cat) {
+                    const icons = {
+                        general: 'globe',
+                        technical: 'microchip',
+                        chatbot: 'robot',
+                        coder: 'code',
+                        image: 'image',
+                        support: 'headset'
+                    };
+                    return icons[cat] || 'folder';
+                },
+                
+                async copyLink() {
+                    const success = await Utils.copyToClipboard(window.location.href);
+                    if (success) {
+                        alert('Link copied to clipboard!');
+                    }
+                },
+                
+                copyToClipboard(text) {
+                    navigator.clipboard.writeText(text);
+                    alert('Copied to clipboard!');
+                },
+                
+                printItem() {
+                    window.print();
+                },
+                
+                shareItem() {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: this.item.question,
+                            url: window.location.href
+                        });
+                    }
+                },
+                
+                downloadAsMarkdown() {
+                    const content = `# ${this.item.question}\n\n${this.item.answer}`;
+                    const blob = new Blob([content], { type: 'text/markdown' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${this.categoryName}-${this.itemId}.md`;
+                    a.click();
+                },
+                
+                reportIssue() {
+                    const title = encodeURIComponent(`Issue with item: ${this.item.question}`);
+                    const body = encodeURIComponent(`\n\n\n---\nItem: ${window.location.href}`);
+                    window.open(`https://github.com/amkyawdev/knowledge-server/issues/new?title=${title}&body=${body}`);
+                },
+                
+                searchKeyword(keyword) {
+                    window.location.href = `search.html?q=${encodeURIComponent(keyword)}`;
+                },
+                
+                toggleTheme() {
+                    this.theme = this.theme === 'light' ? 'dark' : 'light';
+                    localStorage.setItem('theme', this.theme);
+                    
+                    if (this.theme === 'dark') {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.removeAttribute('data-theme');
+                    }
+                }
+            }));
+        });
+    </script>
+</body>
+</html>
