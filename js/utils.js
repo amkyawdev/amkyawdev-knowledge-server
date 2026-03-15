@@ -1,46 +1,29 @@
-/**
- * Utils - Helper functions
- */
-
+// js/utils.js
 const Utils = {
-    /**
-     * Get URL parameter
-     */
-    getUrlParam(param) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(param);
-    },
-
-    /**
-     * Set URL parameter
-     */
-    setUrlParam(param, value) {
-        const url = new URL(window.location.href);
-        url.searchParams.set(param, value);
-        window.history.pushState({}, '', url);
-    },
-
-    /**
-     * Format date
-     */
-    formatDate(date, locale = 'my-MM') {
-        return new Date(date).toLocaleDateString(locale, {
+    // Format date
+    formatDate(date) {
+        return new Date(date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
     },
-
-    /**
-     * Format number
-     */
-    formatNumber(num) {
-        return new Intl.NumberFormat().format(num);
+    
+    // Truncate text
+    truncate(text, length = 100) {
+        if (text.length <= length) return text;
+        return text.substring(0, length) + '...';
     },
-
-    /**
-     * Debounce function
-     */
+    
+    // Generate slug from text
+    slugify(text) {
+        return text
+            .toLowerCase()
+            .replace(/[^\w ]+/g, '')
+            .replace(/ +/g, '-');
+    },
+    
+    // Debounce function
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -52,24 +35,8 @@ const Utils = {
             timeout = setTimeout(later, wait);
         };
     },
-
-    /**
-     * Throttle function
-     */
-    throttle(func, limit) {
-        let inThrottle;
-        return function(...args) {
-            if (!inThrottle) {
-                func.apply(this, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
-            }
-        };
-    },
-
-    /**
-     * Copy to clipboard
-     */
+    
+    // Copy to clipboard
     async copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
@@ -79,85 +46,63 @@ const Utils = {
             return false;
         }
     },
-
-    /**
-     * Show notification
-     */
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 10);
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    },
-
-    /**
-     * Validate JSON
-     */
-    validateJSON(str) {
-        try {
-            JSON.parse(str);
-            return true;
-        } catch (e) {
-            return false;
+    
+    // Get URL parameters
+    getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        const obj = {};
+        for (const [key, value] of params) {
+            obj[key] = value;
         }
+        return obj;
     },
-
-    /**
-     * Format JSON
-     */
-    formatJSON(json) {
-        if (typeof json === 'string') {
-            json = JSON.parse(json);
-        }
-        return JSON.stringify(json, null, 2);
+    
+    // Set URL parameters
+    setUrlParams(params) {
+        const url = new URL(window.location.href);
+        Object.keys(params).forEach(key => {
+            url.searchParams.set(key, params[key]);
+        });
+        window.history.pushState({}, '', url);
     },
-
-    /**
-     * Minify JSON
-     */
-    minifyJSON(json) {
-        if (typeof json === 'string') {
-            json = JSON.parse(json);
-        }
-        return JSON.stringify(json);
+    
+    // Detect if device is mobile
+    isMobile() {
+        return window.innerWidth <= 768;
     },
-
-    /**
-     * Generate random ID
-     */
+    
+    // Generate random ID
     generateId() {
-        return Math.random().toString(36).substring(2, 15);
+        return Math.random().toString(36).substr(2, 9);
     },
-
-    /**
-     * Truncate text
-     */
-    truncate(text, length = 100) {
-        if (text.length <= length) return text;
-        return text.substring(0, length) + '...';
+    
+    // Safe JSON parse
+    safeJsonParse(str, fallback = null) {
+        try {
+            return JSON.parse(str);
+        } catch {
+            return fallback;
+        }
     },
-
-    /**
-     * Slugify text
-     */
-    slugify(text) {
-        return text
-            .toLowerCase()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/--+/g, '-')
-            .trim();
+    
+    // Group array by key
+    groupBy(array, key) {
+        return array.reduce((result, item) => {
+            (result[item[key]] = result[item[key]] || []).push(item);
+            return result;
+        }, {});
+    },
+    
+    // Sort array by key
+    sortBy(array, key, order = 'asc') {
+        return array.sort((a, b) => {
+            if (order === 'asc') {
+                return a[key] > b[key] ? 1 : -1;
+            } else {
+                return a[key] < b[key] ? 1 : -1;
+            }
+        });
     }
 };
 
-// Export
 window.Utils = Utils;
