@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en" x-data="apiPlayground()" x-init="init">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Playground - Amkyaw.Dev Knowledge Base</title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Highlight.js for code syntax -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- API Client -->
+    <script src="../js/api-client.js"></script>
+</head>
+<body :class="{ 'dark-theme': isDark }">
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="../index.html">
+                    <img src="../assets/images/logo.svg" alt="Amkyaw.Dev" width="112" height="28">
+                </a>
+                
+                <a role="button" class="navbar-burger" :class="{ 'is-active': isMenuOpen }" 
+                   @click="toggleMenu" aria-label="menu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div class="navbar-menu" :class="{ 'is-active': isMenuOpen }">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="../index.html">Home</a>
+                    <a class="navbar-item" href="search.html">Search</a>
+                    <a class="navbar-item" href="categories.html">Categories</a>
+                    <a class="navbar-item" href="api-docs.html">API Docs</a>
+                    <a class="navbar-item is-active" href="api-playground.html">Playground</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <button class="button is-ghost" @click="toggleTheme">
+                            <i class="fas" :class="isDark ? 'fa-sun' : 'fa-moon'"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero is-primary is-small">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    <i class="fas fa-flask"></i>
+                    API Playground
+                </h1>
+                <p class="subtitle">
+                    Test and experiment with our API endpoints in real-time
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <!-- API Key Warning -->
+            <div class="message is-warning" x-show="!hasApiKey">
+                <div class="message-body">
+                    <i class="fas fa-info-circle"></i>
+                    You're using the public API (rate limited to 10 requests/minute). 
+                    <a href="#get-api-key" @click.prevent="showApiKeyModal = true">Get an API key</a> for higher limits.
+                </div>
+            </div>
+
+            <!-- Playground Grid -->
+            <div class="columns">
+                <!-- Left Column - Request Builder -->
+                <div class="column is-5">
+                    <div class="box">
+                        <h3 class="title is-5">🔧 Request Builder</h3>
+                        
+                        <!-- Method Selection -->
+                        <div class="field">
+                            <label class="label">Method</label>
+                            <div class="control">
+                                <div class="select is-fullwidth" :class="{ 'is-loading': loading }">
+                                    <select x-model="request.method">
+                                        <option value="GET">GET</option>
+                                        <option value="POST">POST</option>
+                                        <option value="PUT">PUT</option>
+                                        <option value="DELETE">DELETE</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Endpoint Selection -->
+                        <div class="field">
+                            <label class="label">Endpoint</label>
+                            <div class="control">
+                                <div class="select is-fullwidth" :class="{ 'is-loading': loading }">
+                                    <select x-model="request.endpoint" @change="updateParams">
+                                        <option value="">Select an endpoint...</option>
+                                        <optgroup label="Search">
+                                            <option value="/search">🔍 Search</option>
+                                        </optgroup>
+                                        <optgroup label="Categories">
+                                            <option value="/categories">📂 All Categories</option>
+                                            <option value="/category/general">📁 General</option>
+                                            <option value="/category/technical">📁 Technical</option>
+                                            <option value="/category/chatbot">📁 Chatbot</option>
+                                            <option value="/category/coder">📁 Coder</option>
+                                            <option value="/category/image">📁 Image</option>
+                                        </optgroup>
+                                        <optgroup label="Items">
+                                            <option value="/item/js-basics">📄 JavaScript Basics</option>
+                                            <option value="/item/python-intro">📄 Python Intro</option>
+                                            <option value="/item/api-design">📄 API Design</option>
+                                        </optgroup>
+                                        <optgroup label="Special">
+                                            <option value="/popular">🔥 Popular</option>
+                                            <option value="/recent">🆕 Recent</option>
+                                            <option value="/stats">📊 Stats</option>
+                                            <option value="/health">❤️ Health</option>
+                                        </optgroup>
+                                        <optgroup label="External">
+                                            <option value="/external/github/amkyaw">🐙 GitHub Profile</option>
+                                            <option value="/external/openai">🤖 OpenAI (POST)</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Endpoint -->
+                        <div class="field">
+                            <label class="label">Or Custom Path</label>
+                            <div class="control">
+                                <input class="input" type="text" x-model="request.customPath" 
+                                       placeholder="/custom/path">
+                            </div>
+                        </div>
+
+                        <!-- Final URL Display -->
+                        <div class="field">
+                            <label class="label">Full URL</label>
+                            <div class="control">
+                                <div class="is-flex">
+                                    <span class="tag is-info mr-1" x-text="request.method"></span>
+                                    <code class="is-flex-grow-1 p-2" x-text="fullUrl"></code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Parameters Section -->
+                        <div class="field">
+                            <label class="label">Query Parameters</label>
+                            <template x-for="(param, index) in request.params" :key="index">
+                                <div class="field has-addons mb-2">
+                                    <div class="control is-expanded">
+                                        <input class="input is-small" type="text" 
+                                               x-model="param.key" placeholder="Key">
+                                    </div>
+                                    <div class="control is-expanded">
+                                        <input class="input is-small" type="text" 
+                                               x-model="param.value" placeholder="Value">
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-small is-danger" 
+                                                @click="removeParam(index)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                            <button class="button is-small is-fullwidth" @click="addParam">
+                                <i class="fas fa-plus"></i> Add Parameter
+                            </button>
+                        </div>
+
+                        <!-- Headers Section -->
+                        <div class="field" x-show="request.method !== 'GET'">
+                            <label class="label">Headers</label>
+                            <template x-for="(header, index) in request.headers" :key="index">
+                                <div class="field has-addons mb-2">
+                                    <div class="control is-expanded">
+                                        <input class="input is-small" type="text" 
+                                               x-model="header.key" placeholder="Key">
+                                    </div>
+                                    <div class="control is-expanded">
+                                        <input class="input is-small" type="text" 
+                                               x-model="header.value" placeholder="Value">
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-small is-danger" 
+                                                @click="removeHeader(index)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                            <button class="button is-small is-fullwidth" @click="addHeader">
+                                <i class="fas fa-plus"></i> Add Header
+                            </button>
+                        </div>
+
+                        <!-- Body Section (for POST/PUT) -->
+                        <div class="field" x-show="request.method === 'POST' || request.method === 'PUT'">
+                            <label class="label">Request Body (JSON)</label>
+                            <div class="control">
+                                <textarea class="textarea" x-model="request.body" 
+                                          rows="5" placeholder='{
+    "key": "value"
+}'></textarea>
+                            </div>
+                        </div>
+
+                        <!-- API Key Toggle -->
+                        <div class="field">
+                            <label class="checkbox">
+                                <input type="checkbox" x-model="useApiKey">
+                                Use API Key
+                            </label>
+                        </div>
+
+                        <!-- API Key Input -->
+                        <div class="field" x-show="useApiKey">
+                            <label class="label">API Key</label>
+                            <div class="control">
+                                <input class="input" type="password" x-model="apiKey" 
+                                       placeholder="Enter your API key">
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="field is-grouped mt-4">
+                            <div class="control is-expanded">
+                                <button class="button is-primary is-fullwidth" 
+                                        @click="sendRequest"
+                                        :class="{ 'is-loading': loading }"
+                                        :disabled="!canSend">
+                                    <span class="icon"><i class="fas fa-paper-plane"></i></span>
+                                    <span>Send Request</span>
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button class="button" @click="resetForm">
+                                    <span class="icon"><i class="fas fa-undo"></i></span>
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button class="button" @click="copyCurl">
+                                    <span class="icon"><i class="fas fa-code"></i></span>
+                                    <span>cURL</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Examples -->
+                    <div class="box">
+                        <h3 class="title is-6">📋 Quick Examples</h3>
+                        <div class="buttons are-small">
+                            <button class="button" @click="loadExample('search')">
+                                🔍 Search
+                            </button>
+                            <button class="button" @click="loadExample('categories')">
+                                📂 Categories
+                            </button>
+                            <button class="button" @click="loadExample('popular')">
+                                🔥 Popular
+                            </button>
+                            <button class="button" @click="loadExample('health')">
+                                ❤️ Health
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Response -->
+                <div class="column is-7">
+                    <div class="box">
+                        <h3 class="title is-5">📥 Response</h3>
+                        
+                        <!-- Response Metadata -->
+                        <div class="field is-grouped is-grouped-multiline mb-4">
+                            <div class="control">
+                                <div class="tags has-addons">
+                                    <span class="tag is-dark">Status</span>
+                                    <span class="tag" :class="responseStatusClass" 
+                                          x-text="response.status || '—'"></span>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="tags has-addons">
+                                    <span class="tag is-dark">Time</span>
+                                    <span class="tag" x-text="response.time ? response.time + 'ms' : '—'"></span>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="tags has-addons">
+                                    <span class="tag is-dark">Size</span>
+                                    <span class="tag" x-text="response.size || '—'"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Response Headers -->
+                        <div class="mb-4" x-show="Object.keys(response.headers).length > 0">
+                            <h4 class="title is-6">Headers</h4>
+                            <div class="response-headers">
+                                <template x-for="(value, key) in response.headers" :key="key">
+                                    <div class="is-size-7 mb-1">
+                                        <span class="has-text-weight-bold" x-text="key + ':'"></span>
+                                        <span class="ml-2" x-text="value"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Response Body -->
+                        <h4 class="title is-6">Body</h4>
+                        <div class="response-body">
+                            <pre x-show="response.raw" class="p-3"><code class="language-json" x-text="response.raw"></code></pre>
+                            <div x-show="!response.raw" class="has-text-grey p-3">
+                                <i class="fas fa-arrow-left"></i> Send a request to see response
+                            </div>
+                        </div>
+
+                        <!-- Rate Limit Info -->
+                        <div class="mt-4" x-show="response.rateLimit">
+                            <progress class="progress is-small" 
+                                      :value="response.rateLimit.remaining" 
+                                      :max="response.rateLimit.limit"
+                                      :class="rateLimitColor"></progress>
+                            <div class="is-size-7 has-text-grey">
+                                Rate limit: <span x-text="response.rateLimit.remaining + '/' + response.rateLimit.limit"></span> remaining
+                                <span x-show="response.rateLimit.reset"> · Resets <span x-text="formatResetTime(response.rateLimit.reset)"></span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History -->
+                    <div class="box" x-show="history.length > 0">
+                        <h3 class="title is-6">🕒 Recent Requests</h3>
+                        <div class="history-list">
+                            <template x-for="(item, index) in history.slice(0,5)" :key="index">
+                                <a class="panel-block" @click="loadFromHistory(item)">
+                                    <span class="tag mr-2" :class="{
+                                        'is-success': item.status >= 200 && item.status < 300,
+                                        'is-warning': item.status >= 300 && item.status < 400,
+                                        'is-danger': item.status >= 400
+                                    }" x-text="item.status"></span>
+                                    <span class="tag is-info mr-2" x-text="item.method"></span>
+                                    <span class="is-size-7" x-text="item.endpoint"></span>
+                                    <span class="is-size-7 has-text-grey ml-auto" x-text="item.timeAgo"></span>
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Key Modal -->
+            <div class="modal" :class="{ 'is-active': showApiKeyModal }">
+                <div class="modal-background" @click="showApiKeyModal = false"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">Get Your API Key</p>
+                        <button class="delete" @click="showApiKeyModal = false"></button>
+                    </header>
+                    <section class="modal-card-body">
+                        <p class="mb-4">Get free API key for higher rate limits and premium features:</p>
+                        
+                        <div class="field">
+                            <label class="label">Name</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Your name">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Email</label>
+                            <div class="control">
+                                <input class="input" type="email" placeholder="your@email.com">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Use Case</label>
+                            <div class="control">
+                                <div class="select is-fullwidth">
+                                    <select>
+                                        <option>Personal Project</option>
+                                        <option>Commercial Project</option>
+                                        <option>Research</option>
+                                        <option>Learning</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="message is-info">
+                            <div class="message-body">
+                                <i class="fas fa-info-circle"></i>
+                                Free tier: 60 requests/minute, 10,000 requests/day
+                            </div>
+                        </div>
+                    </section>
+                    <footer class="modal-card-foot">
+                        <button class="button is-success" @click="requestApiKey">
+                            Request API Key
+                        </button>
+                        <button class="button" @click="showApiKeyModal = false">Cancel</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Amkyaw.Dev API Playground</strong> by <a href="https://amkyaw.dev">Amkyaw</a>.
+                    Test our API endpoints interactively.
+                </p>
+                <p>
+                    <a href="../index.html">Home</a> |
+                    <a href="api-docs.html">Documentation</a> |
+                    <a href="contact.html">Contact</a> |
+                    <a href="https://github.com/amkyaw/amkyaw-dev-website">GitHub</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function apiPlayground() {
+            return {
+                // State
+                isMenuOpen: false,
+                isDark: localStorage.getItem('theme') === 'dark',
+                loading: false,
+                showApiKeyModal: false,
+                useApiKey: false,
+                apiKey: '',
+                
+                // Request
+                request: {
+                    method: 'GET',
+                    endpoint: '',
+                    customPath: '',
+                    params: [],
+                    headers: [],
+                    body: ''
+                },
+                
+                // Response
+                response: {
+                    status: null,
+                    time: null,
+                    size: null,
+                    headers: {},
+                    raw: null,
+                    rateLimit: null
+                },
+                
+                // History
+                history: [],
+                
+                init() {
+                    // Apply theme
+                    this.applyTheme();
+                    
+                    // Load default params
+                    this.addParam();
+                    this.addHeader();
+                    
+                    // Load history from localStorage
+                    this.loadHistory();
+                    
+                    // Check for saved API key
+                    const savedKey = localStorage.getItem('api_key');
+                    if (savedKey) {
+                        this.apiKey = savedKey;
+                        this.useApiKey = true;
+                    }
+                },
+                
+                toggleMenu() {
+                    this.isMenuOpen = !this.isMenuOpen;
+                },
+                
+                toggleTheme() {
+                    this.isDark = !this.isDark;
+                    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+                    this.applyTheme();
+                },
+                
+                applyTheme() {
+                    if (this.isDark) {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.removeAttribute('data-theme');
+                    }
+                },
+                
+                // Computed
+                get fullUrl() {
+                    const base = 'https://amkyaw.dev/api/v1';
+                    const path = this.request.customPath || this.request.endpoint;
+                    
+                    if (!path) return base;
+                    
+                    // Add query parameters
+                    const params = this.request.params
+                        .filter(p => p.key && p.value)
+                        .map(p => `${encodeURIComponent(p.key)}=${encodeURIComponent(p.value)}`)
+                        .join('&');
+                    
+                    return params ? `${base}${path}?${params}` : `${base}${path}`;
+                },
+                
+                get canSend() {
+                    return (this.request.endpoint || this.request.customPath) && !this.loading;
+                },
+                
+                get hasApiKey() {
+                    return !!this.apiKey;
+                },
+                
+                get responseStatusClass() {
+                    if (!this.response.status) return '';
+                    if (this.response.status >= 200 && this.response.status < 300) return 'is-success';
+                    if (this.response.status >= 300 && this.response.status < 400) return 'is-warning';
+                    if (this.response.status >= 400) return 'is-danger';
+                    return '';
+                },
+                
+                get rateLimitColor() {
+                    if (!this.response.rateLimit) return '';
+                    const percent = (this.response.rateLimit.remaining / this.response.rateLimit.limit) * 100;
+                    if (percent > 50) return 'is-success';
+                    if (percent > 20) return 'is-warning';
+                    return 'is-danger';
+                },
+                
+                // Methods
+                addParam() {
+                    this.request.params.push({ key: '', value: '' });
+                },
+                
+                removeParam(index) {
+                    this.request.params.splice(index, 1);
+                },
+                
+                addHeader() {
+                    this.request.headers.push({ key: '', value: '' });
+                },
+                
+                removeHeader(index) {
+                    this.request.headers.splice(index, 1);
+                },
+                
+                updateParams() {
+                    // Auto-set params based on endpoint
+                    if (this.request.endpoint === '/search') {
+                        this.request.params = [{ key: 'q', value: 'javascript' }];
+                    } else if (this.request.endpoint.includes('/category/')) {
+                        this.request.params = [{ key: 'include_items', value: 'true' }];
+                    } else if (this.request.endpoint === '/popular' || this.request.endpoint === '/recent') {
+                        this.request.params = [{ key: 'limit', value: '5' }];
+                    }
+                },
+                
+                async sendRequest() {
+                    if (!this.canSend) return;
+                    
+                    this.loading = true;
+                    const startTime = performance.now();
+                    
+                    try {
+                        // Build request options
+                        const options = {
+                            method: this.request.method,
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        };
+                        
+                        // Add custom headers
+                        this.request.headers.forEach(h => {
+                            if (h.key && h.value) {
+                                options.headers[h.key] = h.value;
+                            }
+                        });
+                        
+                        // Add API key if used
+                        if (this.useApiKey && this.apiKey) {
+                            options.headers['Authorization'] = `Bearer ${this.apiKey}`;
+                        }
+                        
+                        // Add body for POST/PUT
+                        if (this.request.method !== 'GET' && this.request.body) {
+                            try {
+                                options.body = this.request.body;
+                            } catch (e) {
+                                console.error('Invalid JSON body');
+                            }
+                        }
+                        
+                        // Make request
+                        const response = await fetch(this.fullUrl, options);
+                        
+                        // Calculate time
+                        const endTime = performance.now();
+                        this.response.time = Math.round(endTime - startTime);
+                        
+                        // Get response data
+                        this.response.status = response.status;
+                        
+                        // Get headers
+                        this.response.headers = {};
+                        response.headers.forEach((value, key) => {
+                            this.response.headers[key] = value;
+                            
+                            // Parse rate limit headers
+                            if (key.toLowerCase().includes('ratelimit')) {
+                                if (!this.response.rateLimit) this.response.rateLimit = {};
+                                const parts = key.split('-');
+                                const name = parts[1]?.toLowerCase();
+                                if (name) {
+                                    this.response.rateLimit[name] = parseInt(value);
+                                }
+                            }
+                        });
+                        
+                        // Get response body
+                        const text = await response.text();
+                        this.response.raw = text;
+                        this.response.size = this.formatBytes(text.length);
+                        
+                        // Add to history
+                        this.addToHistory({
+                            method: this.request.method,
+                            endpoint: this.request.endpoint || this.request.customPath,
+                            status: response.status,
+                            time: this.response.time,
+                            timestamp: Date.now()
+                        });
+                        
+                        // Highlight JSON
+                        if (text.startsWith('{') || text.startsWith('[')) {
+                            setTimeout(() => {
+                                document.querySelectorAll('pre code').forEach(block => {
+                                    hljs.highlightBlock(block);
+                                });
+                            }, 100);
+                        }
+                        
+                    } catch (error) {
+                        this.response.raw = JSON.stringify({
+                            error: error.message,
+                            type: 'Request Failed'
+                        }, null, 2);
+                        this.response.status = 0;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                
+                resetForm() {
+                    this.request = {
+                        method: 'GET',
+                        endpoint: '',
+                        customPath: '',
+                        params: [],
+                        headers: [],
+                        body: ''
+                    };
+                    this.response = {
+                        status: null,
+                        time: null,
+                        size: null,
+                        headers: {},
+                        raw: null,
+                        rateLimit: null
+                    };
+                    this.addParam();
+                    this.addHeader();
+                },
+                
+                loadExample(type) {
+                    this.resetForm();
+                    
+                    switch(type) {
+                        case 'search':
+                            this.request.endpoint = '/search';
+                            this.request.params = [{ key: 'q', value: 'javascript' }];
+                            break;
+                        case 'categories':
+                            this.request.endpoint = '/categories';
+                            break;
+                        case 'popular':
+                            this.request.endpoint = '/popular';
+                            this.request.params = [{ key: 'limit', value: '5' }];
+                            break;
+                        case 'health':
+                            this.request.endpoint = '/health';
+                            break;
+                    }
+                },
+                
+                async copyCurl() {
+                    // Build curl command
+                    let curl = `curl -X ${this.request.method}`;
+                    
+                    // Add headers
+                    curl += ` \\\n  -H "Content-Type: application/json"`;
+                    
+                    if (this.useApiKey && this.apiKey) {
+                        curl += ` \\\n  -H "Authorization: Bearer ${this.apiKey}"`;
+                    }
+                    
+                    // Add body for POST/PUT
+                    if (this.request.method !== 'GET' && this.request.body) {
+                        curl += ` \\\n  -d '${this.request.body}'`;
+                    }
+                    
+                    // Add URL
+                    curl += ` \\\n  "${this.fullUrl}"`;
+                    
+                    // Copy to clipboard
+                    try {
+                        await navigator.clipboard.writeText(curl);
+                        alert('✅ cURL command copied to clipboard!');
+                    } catch (err) {
+                        console.error('Failed to copy:', err);
+                    }
+                },
+                
+                formatBytes(bytes) {
+                    if (bytes === 0) return '0 B';
+                    const k = 1024;
+                    const sizes = ['B', 'KB', 'MB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                },
+                
+                formatResetTime(timestamp) {
+                    const reset = new Date(timestamp * 1000);
+                    const now = new Date();
+                    const diff = reset - now;
+                    
+                    if (diff < 0) return 'now';
+                    if (diff < 60000) return `${Math.round(diff / 1000)}s`;
+                    if (diff < 3600000) return `${Math.round(diff / 60000)}m`;
+                    return `${Math.round(diff / 3600000)}h`;
+                },
+                
+                addToHistory(item) {
+                    this.history.unshift({
+                        ...item,
+                        timeAgo: 'just now'
+                    });
+                    
+                    // Save to localStorage
+                    localStorage.setItem('api_history', JSON.stringify(this.history.slice(0, 10)));
+                },
+                
+                loadHistory() {
+                    const saved = localStorage.getItem('api_history');
+                    if (saved) {
+                        try {
+                            this.history = JSON.parse(saved);
+                        } catch (e) {
+                            console.error('Failed to load history');
+                        }
+                    }
+                },
+                
+                loadFromHistory(item) {
+                    this.request.method = item.method;
+                    
+                    if (item.endpoint.startsWith('/')) {
+                        if (item.endpoint.includes('?')) {
+                            const [path, query] = item.endpoint.split('?');
+                            this.request.endpoint = path;
+                            
+                            // Parse query params
+                            const params = new URLSearchParams(query);
+                            this.request.params = [];
+                            params.forEach((value, key) => {
+                                this.request.params.push({ key, value });
+                            });
+                        } else {
+                            this.request.endpoint = item.endpoint;
+                        }
+                    }
+                    
+                    this.sendRequest();
+                },
+                
+                requestApiKey() {
+                    alert('Demo: In production, this would send a real API key request.');
+                    this.showApiKeyModal = false;
+                    
+                    // Simulate getting a key
+                    const demoKey = 'ak_' + Math.random().toString(36).substr(2, 32);
+                    this.apiKey = demoKey;
+                    this.useApiKey = true;
+                    localStorage.setItem('api_key', demoKey);
+                }
+            };
+        }
+    </script>
+
+    <style>
+        .response-body {
+            background: #f5f5f5;
+            border-radius: 6px;
+            max-height: 400px;
+            overflow: auto;
+        }
+        
+        [data-theme="dark"] .response-body {
+            background: #2a2a2a;
+        }
+        
+        .response-body pre {
+            background: transparent;
+            margin: 0;
+        }
+        
+        .response-headers {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+        
+        [data-theme="dark"] .response-headers {
+            background: #2a2a2a;
+        }
+        
+        .history-list .panel-block {
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .history-list .panel-block:hover {
+            background: #f5f5f5;
+        }
+        
+        [data-theme="dark"] .history-list .panel-block:hover {
+            background: #2a2a2a;
+        }
+        
+        .progress {
+            height: 4px;
+        }
+    </style>
+</body>
+</html>
