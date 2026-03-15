@@ -1,0 +1,15 @@
+[build]
+  base = "feature/knowledge-server-initial"
+  publish = "."
+
+# Optional: redirect API style request
+[[redirects]]
+  from = "/api/*"
+  to = "/:splat"
+  status = 200
+
+# Allow CORS (optional if using API requests)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
