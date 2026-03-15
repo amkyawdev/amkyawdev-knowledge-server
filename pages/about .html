@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" x-data="app">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Knowledge Server</title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar is-primary" x-data="{ mobileMenuOpen: false }">
+        <!-- ... same navbar code ... -->
+    </nav>
+
+    <!-- About Section -->
+    <section class="section">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-two-thirds">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="has-text-centered mb-6">
+                                <i class="fas fa-database fa-4x has-text-primary mb-4"></i>
+                                <h1 class="title is-2">About Knowledge Server</h1>
+                                <h2 class="subtitle is-5">Structured knowledge base with JSON files</h2>
+                            </div>
+
+                            <div class="content">
+                                <h3 class="title is-4">📖 Project Overview</h3>
+                                <p>
+                                    Knowledge Server is a lightweight, organized knowledge base system built with 
+                                    <strong>Bulma CSS</strong> and <strong>Alpine.js</strong>. It stores all knowledge 
+                                    in structured JSON files, organized by categories for easy management and retrieval.
+                                </p>
+
+                                <h3 class="title is-4 mt-5">🎯 Purpose</h3>
+                                <p>
+                                    This project aims to provide a simple, accessible way to organize and serve 
+                                    knowledge content without the need for a backend database. It's perfect for:
+                                </p>
+                                <ul>
+                                    <li>Documentation websites</li>
+                                    <li>FAQ systems</li>
+                                    <li>Knowledge bases</li>
+                                    <li>Learning resources</li>
+                                    <li>Technical documentation</li>
+                                </ul>
+
+                                <h3 class="title is-4 mt-5">✨ Key Features</h3>
+                                <div class="columns is-multiline mt-3">
+                                    <div class="column is-half">
+                                        <div class="box">
+                                            <i class="fas fa-folder-tree fa-2x has-text-primary mb-3"></i>
+                                            <h4 class="title is-6">Organized Categories</h4>
+                                            <p class="has-text-grey">General, technical, chatbot, coder, image, support and more</p>
+                                        </div>
+                                    </div>
+                                    <div class="column is-half">
+                                        <div class="box">
+                                            <i class="fas fa-search fa-2x has-text-primary mb-3"></i>
+                                            <h4 class="title is-6">Powerful Search</h4>
+                                            <p class="has-text-grey">Search across all categories with intelligent scoring</p>
+                                        </div>
+                                    </div>
+                                    <div class="column is-half">
+                                        <div class="box">
+                                            <i class="fas fa-moon fa-2x has-text-primary mb-3"></i>
+                                            <h4 class="title is-6">Dark/Light Theme</h4>
+                                            <p class="has-text-grey">Switch between themes for comfortable reading</p>
+                                        </div>
+                                    </div>
+                                    <div class="column is-half">
+                                        <div class="box">
+                                            <i class="fas fa-mobile-alt fa-2x has-text-primary mb-3"></i>
+                                            <h4 class="title is-6">Responsive Design</h4>
+                                            <p class="has-text-grey">Works perfectly on all devices</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h3 class="title is-4 mt-5">🛠️ Technologies Used</h3>
+                                <div class="tags are-medium">
+                                    <span class="tag is-info">Bulma CSS</span>
+                                    <span class="tag is-info">Alpine.js</span>
+                                    <span class="tag is-info">Font Awesome</span>
+                                    <span class="tag is-info">JSON</span>
+                                    <span class="tag is-info">GitHub Pages</span>
+                                    <span class="tag is-info">Highlight.js</span>
+                                </div>
+
+                                <h3 class="title is-4 mt-5">📁 Project Structure</h3>
+                                <pre class="has-background-light p-4">
+knowledge-server/
+├── index.html
+├── pages/
+│   ├── search.html
+│   ├── categories.html
+│   ├── category.html
+│   ├── item.html
+│   ├── about.html
+│   └── contact.html
+├── js/
+│   ├── alpine-init.js
+│   ├── knowledge-loader.js
+│   ├── search.js
+│   ├── theme-switcher.js
+│   └── utils.js
+├── css/
+│   └── style.css
+├── assets/
+│   ├── images/
+│   └── icons/
+└── data/ (your JSON files here)</pre>
+
+                                <h3 class="title is-4 mt-5">👥 Team</h3>
+                                <div class="columns is-centered">
+                                    <div class="column is-half">
+                                        <div class="box has-text-centered">
+                                            <figure class="image is-128x128 is-inline-block mb-3">
+                                                <img class="is-rounded" src="https://via.placeholder.com/128" alt="Amkyaw">
+                                            </figure>
+                                            <h4 class="title is-5">Amkyaw Dev</h4>
+                                            <p class="subtitle is-6">Lead Developer</p>
+                                            <div class="buttons is-centered">
+                                                <a href="https://github.com/amkyawdev" class="button is-small is-dark">
+                                                    <i class="fab fa-github"></i>
+                                                </a>
+                                                <a href="https://twitter.com/amkyawdev" class="button is-small is-info">
+                                                    <i class="fab fa-twitter"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h3 class="title is-4 mt-5">📄 License</h3>
+                                <p>
+                                    This project is licensed under the MIT License. Feel free to use, modify, and distribute 
+                                    it as you see fit. See the <a href="https://github.com/amkyawdev/knowledge-server/blob/main/LICENSE">LICENSE</a> 
+                                    file for more details.
+                                </p>
+
+                                <h3 class="title is-4 mt-5">🤝 Contributing</h3>
+                                <p>
+                                    Contributions are welcome! If you'd like to contribute, please:
+                                </p>
+                                <ol>
+                                    <li>Fork the repository</li>
+                                    <li>Create a feature branch</li>
+                                    <li>Make your changes</li>
+                                    <li>Submit a pull request</li>
+                                </ol>
+                                <p>
+                                    For major changes, please open an issue first to discuss what you'd like to change.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- ... same footer code ... -->
+    </footer>
+
+    <script src="../js/alpine-init.js"></script>
+    <script src="../js/theme-switcher.js"></script>
+</body>
+  </html>
