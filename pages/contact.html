@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" x-data="contactApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Knowledge Server</title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar is-primary" x-data="{ mobileMenuOpen: false }">
+        <!-- ... same navbar code ... -->
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="section">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-half">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="has-text-centered mb-5">
+                                <i class="fas fa-envelope fa-4x has-text-primary mb-4"></i>
+                                <h1 class="title is-2">Contact Us</h1>
+                                <p class="subtitle is-6">Have questions? We'd love to hear from you.</p>
+                            </div>
+
+                            <!-- Contact Form -->
+                            <form @submit.prevent="submitForm">
+                                <div class="field">
+                                    <label class="label">Name</label>
+                                    <div class="control has-icons-left">
+                                        <input class="input" type="text" 
+                                               x-model="form.name" 
+                                               :class="{ 'is-danger': errors.name }"
+                                               placeholder="Your name">
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                    </div>
+                                    <p class="help is-danger" x-show="errors.name" x-text="errors.name"></p>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Email</label>
+                                    <div class="control has-icons-left">
+                                        <input class="input" type="email" 
+                                               x-model="form.email" 
+                                               :class="{ 'is-danger': errors.email }"
+                                               placeholder="your@email.com">
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                    </div>
+                                    <p class="help is-danger" x-show="errors.email" x-text="errors.email"></p>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Subject</label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">
+                                            <select x-model="form.subject">
+                                                <option>General Inquiry</option>
+                                                <option>Technical Support</option>
+                                                <option>Bug Report</option>
+                                                <option>Feature Request</option>
+                                                <option>Partnership</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Message</label>
+                                    <div class="control">
+                                        <textarea class="textarea" 
+                                                  x-model="form.message" 
+                                                  :class="{ 'is-danger': errors.message }"
+                                                  rows="5"
+                                                  placeholder="Your message..."></textarea>
+                                    </div>
+                                    <p class="help is-danger" x-show="errors.message" x-text="errors.message"></p>
+                                </div>
+
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="checkbox">
+                                            <input type="checkbox" x-model="form.newsletter">
+                                            I want to receive newsletter updates
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="field is-grouped is-grouped-centered mt-5">
+                                    <div class="control">
+                                        <button class="button is-primary" type="submit" 
+                                                :class="{ 'is-loading': loading }">
+                                            <i class="fas fa-paper-plane mr-2"></i>
+                                            Send Message
+                                        </button>
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-light" type="reset" @click="resetForm">
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Success Message -->
+                            <div x-show="submitted" x-transition class="notification is-success mt-5">
+                                <button class="delete" @click="submitted = false"></button>
+                                <p class="has-text-centered">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    Thank you for your message! We'll get back to you soon.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="columns is-multiline mt-5">
+                        <div class="column is-half">
+                            <div class="box has-text-centered">
+                                <i class="fas fa-map-marker-alt fa-2x has-text-primary mb-3"></i>
+                                <h4 class="title is-6">Address</h4>
+                                <p class="has-text-grey">Myanmar</p>
+                            </div>
+                        </div>
+                        <div class="column is-half">
+                            <div class="box has-text-centered">
+                                <i class="fas fa-envelope fa-2x has-text-primary mb-3"></i>
+                                <h4 class="title is-6">Email</h4>
+                                <p class="has-text-grey">contact@amkyaw.dev</p>
+                            </div>
+                        </div>
+                        <div class="column is-half">
+                            <div class="box has-text-centered">
+                                <i class="fas fa-globe fa-2x has-text-primary mb-3"></i>
+                                <h4 class="title is-6">Website</h4>
+                                <p class="has-text-grey">https://amkyaw.dev</p>
+                            </div>
+                        </div>
+                        <div class="column is-half">
+                            <div class="box has-text-centered">
+                                <i class="fab fa-github fa-2x has-text-primary mb-3"></i>
+                                <h4 class="title is-6">GitHub</h4>
+                                <p class="has-text-grey">@amkyawdev</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- ... same footer code ... -->
+    </footer>
+
+    <script src="../js/alpine-init.js"></script>
+    <script src="../js/theme-switcher.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('contactApp', () => ({
+                form: {
+                    name: '',
+                    email: '',
+                    subject: 'General Inquiry',
+                    message: '',
+                    newsletter: false
+                },
+                errors: {},
+                loading: false,
+                submitted: false,
+                
+                validateForm() {
+                    this.errors = {};
+                    
+                    if (!this.form.name.trim()) {
+                        this.errors.name = 'Name is required';
+                    }
+                    
+                    if (!this.form.email.trim()) {
+                        this.errors.email = 'Email is required';
+                    } else if (!this.isValidEmail(this.form.email)) {
+                        this.errors.email = 'Please enter a valid email';
+                    }
+                    
+                    if (!this.form.message.trim()) {
+                        this.errors.message = 'Message is required';
+                    } else if (this.form.message.trim().length < 10) {
+                        this.errors.message = 'Message must be at least 10 characters';
+                    }
+                    
+                    return Object.keys(this.errors).length === 0;
+                },
+                
+                isValidEmail(email) {
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                },
+                
+                async submitForm() {
+                    if (!this.validateForm()) return;
+                    
+                    this.loading = true;
+                    
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    console.log('Form submitted:', this.form);
+                    
+                    this.loading = false;
+                    this.submitted = true;
+                    this.resetForm();
+                    
+                    // Auto hide success message after 5 seconds
+                    setTimeout(() => {
+                        this.submitted = false;
+                    }, 5000);
+                },
+                
+                resetForm() {
+                    this.form = {
+                        name: '',
+                        email: '',
+                        subject: 'General Inquiry',
+                        message: '',
+                        newsletter: false
+                    };
+                    this.errors = {};
+                },
+                
+                toggleTheme() {
+                    const event = new CustomEvent('toggle-theme');
+                    window.dispatchEvent(event);
+                }
+            }));
+        });
+    </script>
+</body>
+                                      </html>
