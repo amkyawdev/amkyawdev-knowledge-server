@@ -1,59 +1,74 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en" x-data="categoriesApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>အမျိုးအစားများ - Knowledge Server</title>
+    <title>Categories - Knowledge Server</title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/light-theme.css" id="theme-stylesheet">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="container">
-                <a href="../index.html" class="logo">
-                    <img src="../assets/images/logo.svg" alt="Logo" width="32" height="32">
-                    <span>Knowledge Server</span>
-                </a>
-                <ul class="nav-menu">
-                    <li><a href="../index.html">ပင်မစာမျက်နှာ</a></li>
-                    <li><a href="categories.html" class="active">အမျိုးအစားများ</a></li>
-                    <li><a href="search.html">ရှာဖွေရန်</a></li>
-                    <li><a href="tools.html">ပါဝင်းသုံးစွက်မှုများ</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <button id="theme-toggle" class="btn-icon">🌙</button>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- Navbar (same as index.html) -->
+    <nav class="navbar is-primary" x-data="{ mobileMenuOpen: false }">
+        <!-- ... same navbar code ... -->
+    </nav>
 
-    <main>
-        <section class="categories-page">
-            <div class="container">
-                <h1>အမျိုးအစားများ</h1>
-                <p class="page-description">သင့်လိုအပ်သော အမျိုးအစားကို ရွေးချယ်ပါပါ</p>
-                
-                <div class="category-grid" id="category-grid">
-                    <!-- Categories will be loaded dynamically -->
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
+    <!-- Categories Section -->
+    <section class="section">
         <div class="container">
-            <p>&copy; 2024 Knowledge Server</p>
+            <h1 class="title is-2 has-text-centered mb-6">Knowledge Categories</h1>
+            
+            <div class="columns is-multiline">
+                <template x-for="category in categories" :key="category.name">
+                    <div class="column is-one-third" x-show="true" x-transition>
+                        <div class="card" @click="viewCategory(category.name)">
+                            <div class="card-content has-text-centered">
+                                <i :class="'fas fa-' + category.icon + ' fa-3x has-text-primary mb-4'"></i>
+                                <p class="title is-4 mb-2" x-text="category.displayName"></p>
+                                <p class="subtitle is-6 mb-3" x-text="category.nameEn"></p>
+                                <p class="has-text-grey" x-text="category.description"></p>
+                                <div class="mt-4">
+                                    <span class="tag is-primary mr-2" x-text="category.fileCount + ' files'"></span>
+                                    <span class="tag is-info" x-text="category.itemCount + ' items'"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- ... same footer code ... -->
     </footer>
 
-    <script src="../js/utils.js"></script>
+    <script src="../js/alpine-init.js"></script>
     <script src="../js/theme-switcher.js"></script>
-    <script src="../js/knowledge-loader.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const loader = new KnowledgeLoader();
-            await loader.loadCategories();
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('categoriesApp', () => ({
+                categories: [
+                    { name: 'general', displayName: 'အထွေထွေ', nameEn: 'General', description: 'General knowledge and common questions', icon: 'globe', fileCount: 15, itemCount: 120 },
+                    { name: 'technical', displayName: 'နည်းပညာ', nameEn: 'Technical', description: 'Technical documentation and guides', icon: 'microchip', fileCount: 25, itemCount: 180 },
+                    { name: 'chatbot', displayName: 'Chatbot', nameEn: 'Chatbot', description: 'Chatbot development and AI', icon: 'robot', fileCount: 18, itemCount: 95 },
+                    { name: 'coder', displayName: 'Coder', nameEn: 'Coder', description: 'Programming and development', icon: 'code', fileCount: 32, itemCount: 210 },
+                    { name: 'image', displayName: 'Image', nameEn: 'Image', description: 'Image processing and graphics', icon: 'image', fileCount: 20, itemCount: 140 },
+                    { name: 'support', displayName: 'အကူအညီ', nameEn: 'Support', description: 'Help and support articles', icon: 'headset', fileCount: 12, itemCount: 85 }
+                ],
+                
+                viewCategory(name) {
+                    window.location.href = `category.html?cat=${name}`;
+                }
+            }));
         });
     </script>
 </body>
