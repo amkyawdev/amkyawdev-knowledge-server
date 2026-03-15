@@ -1,182 +1,154 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en" x-data="app">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knowledge Server - အသိပညာဗဟုသုတများ</title>
-    <link rel="icon" href="assets/images/favicon.ico">
+    <title>Knowledge Server - Amkyaw.Dev</title>
+    
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/light-theme.css" id="theme-stylesheet">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="container">
-                <a href="index.html" class="logo">
-                    <img src="assets/images/logo.svg" alt="Logo" width="32" height="32">
-                    <span>Knowledge Server</span>
-                </a>
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="active">ပင်မစာမျက်နှာ</a></li>
-                    <li><a href="pages/categories.html">အမျိုးအစားများ</a></li>
-                    <li><a href="pages/search.html">ရှာဖွေရန်</a></li>
-                    <li><a href="pages/tools.html">ပါဝင်းသုံးစွက်မှုများ</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <button id="theme-toggle" class="btn-icon" aria-label="အလင်း/အမှောင် အပြောင်းအလဲ">
-                        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                </div>
+    <!-- Navbar -->
+    <nav class="navbar is-primary" x-data="{ mobileMenuOpen: false }">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="index.html">
+                <img src="assets/images/logo.svg" alt="Logo" style="max-height: 40px">
+                <span class="has-text-weight-bold ml-2">Knowledge Server</span>
+            </a>
+            <a role="button" class="navbar-burger" :class="{ 'is-active': mobileMenuOpen }" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        
+        <div class="navbar-menu" :class="{ 'is-active': mobileMenuOpen }">
+            <div class="navbar-start">
+                <a class="navbar-item" href="index.html">Home</a>
+                <a class="navbar-item" href="pages/search.html">Search</a>
+                <a class="navbar-item" href="pages/categories.html">Categories</a>
+                <a class="navbar-item" href="pages/about.html">About</a>
+                <a class="navbar-item" href="pages/contact.html">Contact</a>
             </div>
-        </nav>
-    </header>
-
-    <main>
-        <section class="hero">
-            <div class="container">
-                <h1>အသိပညာဗဟုသုတ</h1>
-                <p class="subtitle">သင့်အတွက် လွယ်ကူစွာ ရှာဖွေနိုင်ပါပါ</p>
-                <div class="search-box">
-                    <input type="text" id="main-search" placeholder="ရှာဖွေရန်..." aria-label="ရှာဖွေရန်">
-                    <button type="button" id="search-btn" class="btn-primary">ရှာဖွေရန်</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="categories-preview">
-            <div class="container">
-                <h2>အမျိုးအစားများ</h2>
-                <div class="category-grid" id="category-grid">
-                    <!-- Categories will be loaded dynamically -->
-                </div>
-            </div>
-        </section>
-
-        <section class="features">
-            <div class="container">
-                <h2>အင်္ဂါရပ်များ</h2>
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">🔍</div>
-                        <h3>မြန်ဆန်သော ရှာဖွေမှု</h3>
-                        <p>မြန်ဆန်ပါပါ ရှာဖွေနိုင်ပါပါ</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📂</div>
-                        <h3>အမျိုးအစားခွဲခြားခြင်း</h3>
-                        <p>သင့်လိုအပ်သော အမျိုးအစားအလိုက် ရှာဖွေနိုင်ပါပါ</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🛠️</div>
-                        <h3>ပါဝင်းသုံးစွက်မှုများ</h3>
-                        <p>JSON ကိုင်တွယ်ရန် ပါဝင်းသုံးစွက်မှုများ</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📱</div>
-                        <h3>မိုဘိုင်းပါဋ္ဌာနါက်ကပါ</h3>
-                        <p>မည်သည့်စက်ပါဋ္ဌာန်းမှာမဆို အသုံးပါဋ္ဌာန်းနိုင်ပါပါ</p>
+            
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <button class="button is-light" @click="toggleTheme">
+                            <i class="fas" :class="theme === 'dark' ? 'fa-sun' : 'fa-moon'"></i>
+                        </button>
+                        <a href="https://github.com/amkyawdev/knowledge-server" class="button is-dark">
+                            <i class="fab fa-github"></i>
+                            <span class="ml-2">GitHub</span>
+                        </a>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </nav>
 
-        <section class="stats-preview">
-            <div class="container">
-                <h2>အချက်အလက်များ</h2>
-                <div class="stats-grid" id="stats-grid">
-                    <div class="stat-card">
-                        <span class="stat-number" id="total-categories">0</span>
-                        <span class="stat-label">အမျိုးအစားများ</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number" id="total-items">0</span>
-                        <span class="stat-label">စုစုပါင်း အချက်အလက်များ</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number" id="total-files">0</span>
-                        <span class="stat-label">ဖိုင်များ</span>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero is-medium is-primary is-bold">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title is-1">
+                    Knowledge Server
+                </h1>
+                <h2 class="subtitle is-3">
+                    Structured knowledge base with JSON files
+                </h2>
+                <div class="buttons is-centered">
+                    <a href="pages/search.html" class="button is-light is-large">
+                        <i class="fas fa-search"></i>
+                        <span class="ml-2">Search Knowledge</span>
+                    </a>
+                    <a href="pages/categories.html" class="button is-outlined is-light is-large">
+                        <i class="fas fa-folder"></i>
+                        <span class="ml-2">Browse Categories</span>
+                    </a>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <footer>
+    <!-- Features Section -->
+    <section class="section">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Knowledge Server</h4>
-                    <p>အသိပညာဗဟုသုတ များစွာ ရရှိနိုင်ပါပါ</p>
+            <div class="columns is-multiline">
+                <div class="column is-one-third">
+                    <div class="box has-text-centered">
+                        <i class="fas fa-folder-tree fa-3x has-text-primary mb-4"></i>
+                        <h3 class="title is-4">Organized Categories</h3>
+                        <p>Knowledge organized by categories: general, technical, chatbot, coder, image, and more.</p>
+                    </div>
                 </div>
-                <div class="footer-section">
-                    <h4>လင့်များ</h4>
-                    <ul>
-                        <li><a href="pages/about.html">အကြောင်း</a></li>
-                        <li><a href="pages/contact.html">ဆက်သွယ်ရန်</a></li>
-                        <li><a href="pages/docs.html">မှတ်ချက်များ</a></li>
-                    </ul>
+                
+                <div class="column is-one-third">
+                    <div class="box has-text-centered">
+                        <i class="fas fa-search fa-3x has-text-primary mb-4"></i>
+                        <h3 class="title is-4">Powerful Search</h3>
+                        <p>Search across all categories with intelligent scoring and filtering.</p>
+                    </div>
                 </div>
-                <div class="footer-section">
-                    <h4>အခြား</h4>
-                    <ul>
-                        <li><a href="pages/tools.html">ပါဝင်းသုံးစွက်မှုများ</a></li>
-                        <li><a href="pages/api-docs.html">API မှတ်ချက်</a></li>
-                        <li><a href="pages/404.html">အမှားများ</a></li>
-                    </ul>
+                
+                <div class="column is-one-third">
+                    <div class="box has-text-centered">
+                        <i class="fas fa-moon fa-3x has-text-primary mb-4"></i>
+                        <h3 class="title is-4">Dark/Light Theme</h3>
+                        <p>Switch between dark and light themes for comfortable reading.</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="box has-text-centered">
+                        <i class="fas fa-mobile-alt fa-3x has-text-primary mb-4"></i>
+                        <h3 class="title is-4">Responsive Design</h3>
+                        <p>Works perfectly on desktop, tablet, and mobile devices.</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="box has-text-centered">
+                        <i class="fas fa-json fa-3x has-text-primary mb-4"></i>
+                        <h3 class="title is-4">JSON Based</h3>
+                        <p>All knowledge stored in structured JSON files for easy management.</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="box has-text-centered">
+                        <i class="fas fa-github fa-3x has-text-primary mb-4"></i>
+                        <h3 class="title is-4">Open Source</h3>
+                        <p>Fully open source on GitHub. Contributions welcome!</p>
+                    </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Knowledge Server. အရွယ်အစားအားလုံးကို အသုံးပါဋ္ဌာန်းနိုင်ပါပါ</p>
-            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Knowledge Server</strong> by <a href="https://amkyaw.dev">Amkyaw.Dev</a>. 
+                Source code on <a href="https://github.com/amkyawdev/knowledge-server">GitHub</a>.
+            </p>
+            <p>
+                <i class="fas fa-heart has-text-danger"></i> Built with Bulma CSS and Alpine.js
+            </p>
         </div>
     </footer>
 
-    <script src="js/utils.js"></script>
+    <script src="js/alpine-init.js"></script>
     <script src="js/theme-switcher.js"></script>
-    <script src="js/knowledge-loader.js"></script>
-    <script src="js/search.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const loader = new KnowledgeLoader();
-            await loader.loadCategories();
-            
-            // Update stats
-            document.getElementById('total-categories').textContent = loader.getCategoryCount();
-            document.getElementById('total-items').textContent = await loader.getTotalItems();
-            
-            // Search functionality
-            const searchInput = document.getElementById('main-search');
-            const searchBtn = document.getElementById('search-btn');
-            
-            searchBtn.addEventListener('click', () => {
-                const query = searchInput.value.trim();
-                if (query) {
-                    window.location.href = `pages/search.html?q=${encodeURIComponent(query)}`;
-                }
-            });
-            
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const query = searchInput.value.trim();
-                    if (query) {
-                        window.location.href = `pages/search.html?q=${encodeURIComponent(query)}`;
-                    }
-                }
-            });
-        });
-    </script>
+    <script src="js/utils.js"></script>
 </body>
 </html>
