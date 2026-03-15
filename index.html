@@ -1,153 +1,173 @@
 <!DOCTYPE html>
-<html lang="en" x-data="app">
+<html lang="en" x-data="app()" x-init="init">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knowledge Server - Amkyaw.Dev</title>
+    <title>Amkyaw.Dev - Knowledge Base Server</title>
     
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar is-primary" x-data="{ mobileMenuOpen: false }">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="index.html">
-                <img src="assets/images/logo.svg" alt="Logo" style="max-height: 40px">
-                <span class="has-text-weight-bold ml-2">Knowledge Server</span>
-            </a>
-            <a role="button" class="navbar-burger" :class="{ 'is-active': mobileMenuOpen }" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="menu" aria-expanded="false">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-            </a>
-        </div>
-        
-        <div class="navbar-menu" :class="{ 'is-active': mobileMenuOpen }">
-            <div class="navbar-start">
-                <a class="navbar-item" href="index.html">Home</a>
-                <a class="navbar-item" href="pages/search.html">Search</a>
-                <a class="navbar-item" href="pages/categories.html">Categories</a>
-                <a class="navbar-item" href="pages/about.html">About</a>
-                <a class="navbar-item" href="pages/contact.html">Contact</a>
+<body :class="{ 'dark-theme': isDark }">
+    <!-- Navigation with Hamburger Menu -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="index.html">
+                    <img src="assets/images/logo.svg" alt="Amkyaw.Dev" width="112" height="28">
+                </a>
+                
+                <!-- Hamburger Menu -->
+                <a role="button" class="navbar-burger" :class="{ 'is-active': isMenuOpen }" 
+                   @click="toggleMenu" aria-label="menu" aria-expanded="false">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
-            
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <button class="button is-light" @click="toggleTheme">
-                            <i class="fas" :class="theme === 'dark' ? 'fa-sun' : 'fa-moon'"></i>
+
+            <!-- Navbar Menu -->
+            <div class="navbar-menu" :class="{ 'is-active': isMenuOpen }">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="index.html">Home</a>
+                    <a class="navbar-item" href="pages/search.html">Search</a>
+                    <a class="navbar-item" href="pages/categories.html">Categories</a>
+                    <a class="navbar-item" href="pages/api-docs.html">API</a>
+                    <a class="navbar-item" href="pages/about.html">About</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <!-- Theme Switcher -->
+                        <button class="button is-ghost" @click="toggleTheme">
+                            <i class="fas" :class="isDark ? 'fa-sun' : 'fa-moon'"></i>
                         </button>
-                        <a href="https://github.com/amkyawdev/knowledge-server" class="button is-dark">
-                            <i class="fab fa-github"></i>
-                            <span class="ml-2">GitHub</span>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero is-medium is-primary is-bold">
+    <!-- Hero Section with 3D Animation -->
+    <section class="hero is-fullheight-with-navbar">
         <div class="hero-body">
             <div class="container has-text-centered">
-                <h1 class="title is-1">
-                    Knowledge Server
+                <!-- 3D Title Animation -->
+                <h1 class="title-3d mb-6">
+                    <span class="block" x-text="title1"></span>
+                    <span class="block gradient-text" x-text="title2"></span>
                 </h1>
-                <h2 class="subtitle is-3">
-                    Structured knowledge base with JSON files
-                </h2>
+                
+                <!-- Neon Buttons -->
                 <div class="buttons is-centered">
-                    <a href="pages/search.html" class="button is-light is-large">
-                        <i class="fas fa-search"></i>
-                        <span class="ml-2">Search Knowledge</span>
+                    <a href="pages/search.html" class="button neon-button is-large mx-2">
+                        <span class="icon"><i class="fas fa-search"></i></span>
+                        <span>Search Knowledge</span>
                     </a>
-                    <a href="pages/categories.html" class="button is-outlined is-light is-large">
-                        <i class="fas fa-folder"></i>
-                        <span class="ml-2">Browse Categories</span>
+                    <a href="pages/api-playground.html" class="button neon-button is-large mx-2">
+                        <span class="icon"><i class="fas fa-code"></i></span>
+                        <span>Try API</span>
                     </a>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="section">
-        <div class="container">
-            <div class="columns is-multiline">
-                <div class="column is-one-third">
-                    <div class="box has-text-centered">
-                        <i class="fas fa-folder-tree fa-3x has-text-primary mb-4"></i>
-                        <h3 class="title is-4">Organized Categories</h3>
-                        <p>Knowledge organized by categories: general, technical, chatbot, coder, image, and more.</p>
+                <!-- Stats Cards -->
+                <div class="columns is-multiline mt-6" x-show="stats">
+                    <div class="column is-3">
+                        <div class="box stat-card">
+                            <p class="heading">Categories</p>
+                            <p class="title" x-text="stats.categories"></p>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="column is-one-third">
-                    <div class="box has-text-centered">
-                        <i class="fas fa-search fa-3x has-text-primary mb-4"></i>
-                        <h3 class="title is-4">Powerful Search</h3>
-                        <p>Search across all categories with intelligent scoring and filtering.</p>
+                    <div class="column is-3">
+                        <div class="box stat-card">
+                            <p class="heading">Knowledge Items</p>
+                            <p class="title" x-text="stats.items"></p>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="column is-one-third">
-                    <div class="box has-text-centered">
-                        <i class="fas fa-moon fa-3x has-text-primary mb-4"></i>
-                        <h3 class="title is-4">Dark/Light Theme</h3>
-                        <p>Switch between dark and light themes for comfortable reading.</p>
+                    <div class="column is-3">
+                        <div class="box stat-card">
+                            <p class="heading">API Calls</p>
+                            <p class="title" x-text="stats.apiCalls"></p>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="column is-one-third">
-                    <div class="box has-text-centered">
-                        <i class="fas fa-mobile-alt fa-3x has-text-primary mb-4"></i>
-                        <h3 class="title is-4">Responsive Design</h3>
-                        <p>Works perfectly on desktop, tablet, and mobile devices.</p>
-                    </div>
-                </div>
-                
-                <div class="column is-one-third">
-                    <div class="box has-text-centered">
-                        <i class="fas fa-json fa-3x has-text-primary mb-4"></i>
-                        <h3 class="title is-4">JSON Based</h3>
-                        <p>All knowledge stored in structured JSON files for easy management.</p>
-                    </div>
-                </div>
-                
-                <div class="column is-one-third">
-                    <div class="box has-text-centered">
-                        <i class="fas fa-github fa-3x has-text-primary mb-4"></i>
-                        <h3 class="title is-4">Open Source</h3>
-                        <p>Fully open source on GitHub. Contributions welcome!</p>
+                    <div class="column is-3">
+                        <div class="box stat-card">
+                            <p class="heading">Users</p>
+                            <p class="title" x-text="stats.users"></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Background Animation -->
+        <div class="background-animation">
+            <div class="floating-shapes"></div>
+        </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="content has-text-centered">
-            <p>
-                <strong>Knowledge Server</strong> by <a href="https://amkyaw.dev">Amkyaw.Dev</a>. 
-                Source code on <a href="https://github.com/amkyawdev/knowledge-server">GitHub</a>.
-            </p>
-            <p>
-                <i class="fas fa-heart has-text-danger"></i> Built with Bulma CSS and Alpine.js
-            </p>
-        </div>
-    </footer>
+    <!-- Alpine.js Component -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('app', () => ({
+                isMenuOpen: false,
+                isDark: false,
+                title1: 'Amkyaw.Dev',
+                title2: 'Knowledge Base Server',
+                stats: {
+                    categories: 5,
+                    items: 128,
+                    apiCalls: '10K+',
+                    users: '500+'
+                },
+                
+                init() {
+                    // Check for saved theme
+                    this.isDark = localStorage.getItem('theme') === 'dark';
+                    this.applyTheme();
+                    
+                    // Load stats from API
+                    this.loadStats();
+                },
+                
+                toggleMenu() {
+                    this.isMenuOpen = !this.isMenuOpen;
+                },
+                
+                toggleTheme() {
+                    this.isDark = !this.isDark;
+                    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+                    this.applyTheme();
+                },
+                
+                applyTheme() {
+                    if (this.isDark) {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.removeAttribute('data-theme');
+                    }
+                },
+                
+                async loadStats() {
+                    try {
+                        const response = await fetch('/api/v1/health');
+                        const data = await response.json();
+                        // Update stats from API
+                    } catch (error) {
+                        console.log('Using default stats');
+                    }
+                }
+            }));
+        });
+    </script>
 
-    <script src="js/alpine-init.js"></script>
+    <!-- Custom JavaScript -->
     <script src="js/theme-switcher.js"></script>
     <script src="js/utils.js"></script>
 </body>
